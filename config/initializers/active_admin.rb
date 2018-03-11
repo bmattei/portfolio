@@ -6,6 +6,9 @@ ActiveAdmin.setup do |config|
   #
   config.site_title = "Portfolio"
 
+  #  register the Google Chart JavaScript within this config.
+  config.register_javascript 'https://www.google.com/jsapi'
+
   # Set the link url for the title. For example, to take
   # users to your main site. Defaults to no link.
   #

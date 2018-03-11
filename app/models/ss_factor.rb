@@ -1,0 +1,4 @@
+class SsFactor < ApplicationRecord
+  
+                     
+end

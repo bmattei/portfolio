@@ -1,4 +1,5 @@
 
+
 default: &default
   adapter: mysql2
   username: root

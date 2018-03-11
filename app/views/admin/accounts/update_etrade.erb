@@ -1,0 +1,10 @@
+<%= link_to "Login to Etrade to get token", @url, :target => "_blank" %>
+
+
+<%= semantic_form_for :notification, url: { action: :do_update_etrade } do |f| %>
+  <%= f.inputs do %>
+    <%= f.input :token, as: :string, input_html: { placeholder: "Enter token" } %>
+  <%- end %>
+
+  <%= f.actions %>
+<%- end %>
