@@ -1,6 +1,7 @@
 class Ticker < ActiveRecord::Base
 
   has_many :holdings, dependent: :destroy
+  has_many :admin_users, through: :holdings
   has_many :prices
   has_many :categories, through: :category_tickers
   has_many  :category_tickers

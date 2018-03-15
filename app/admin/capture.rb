@@ -1,54 +1,46 @@
 ActiveAdmin.register Capture do
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
-  # permit_params :list, :of, :attributes, :on, :model
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:permitted, :attributes]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
-
   actions :all, :except => [:new]
   controller do
+    def scoped_collection
+      super.includes(:admin_user).where(admin_user_id: current_admin_user.id)
+    end
     def permitted_params
       params.permit!
     end
   end
 
   collection_action :capture, :method => :get do
-    Capture.capture      
+    current_admin_user.new_capture      
     redirect_to admin_captures_path
   end
-
   
   action_item (:index) do
     link_to('capture', capture_admin_captures_path())
-  end
-
-  collection_action :retrieve_and_capture, :method => :get do
-    Capture.retrieve_and_capture      
-    redirect_to admin_captures_path
-  end
-  action_item (:index) do
-    link_to('retrieve_and_capture', retrieve_and_capture_admin_captures_path())
   end
   
   index do
     column :time do |c|
       c.created_at
     end
-    column :cash, :class => 'text-right' do |c|
-      number_to_currency c.cash
+    column :total, :class => 'text-right' do |c|
+      number_to_currency c.total_value
     end
     column :holdings_value, :class => 'text-right' do |c|
       number_to_currency c.holdings_value
     end
-    column :total, :class => 'text-right' do |c|
-      number_to_currency c.total_value
+
+    column :cash, :class => 'text-right' do |c|
+      number_to_currency c.cash
+    end
+
+    column :equity, :class => 'text-right' do |c|
+      number_to_currency c.equity_value
+    end
+    column :bonds, :class => 'text-right' do |c|
+          number_to_currency c.bond_value
+    end
+    column :other, :class => 'text-right' do |c|
+      number_to_currency c.other_value
     end                     
     actions
   end

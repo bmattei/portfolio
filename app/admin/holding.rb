@@ -16,7 +16,9 @@ ActiveAdmin.register Holding do
 
   controller do
     def scoped_collection
-      super.includes(:ticker, :account)
+      if !current_admin_user.admin
+        super.includes(:ticker, :account).where(accounts: {admin_user_id: current_admin_user.id})
+      end
     end
     def permitted_params
       params.permit!

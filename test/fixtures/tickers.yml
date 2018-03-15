@@ -1,11 +1,190 @@
-# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+VWO:  
+  symbol: VWO 
+  maturity:  
+  duaration:  
+  expenses: 0.14 
+  quality:  
+  idx_name: FTSE Emerging Markets All Cap China A Inclusion Index 
+  group: Vanguard 
+  description: Emerging Markets 
 
-# This model initially had no columns defined.  If you add columns to the
-# model remove the '{}' from the fixture names and add the columns immediately
-# below each fixture, per the syntax in the comments below
-#
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+EFV:  
+  symbol: EFV 
+  maturity:  
+  duaration:  
+  expenses: 0.4 
+  quality:  
+  idx_name: MSCI EAFE Value Index 
+  group: IShares 
+  description: International Developed, Value 
+
+SCHP:  
+  symbol: SCHP 
+  maturity: 8.35 
+  duaration:  
+  expenses: 0.05 
+  quality: AAA 
+  idx_name: Bloomberg Barclays U.S. Treasury Inflation Protected Securities (TIPS) Index 
+  group: Schwab 
+  description: Intermediate TIPS 
+
+SCHR:  
+  symbol: SCHR 
+  maturity: 5.57 
+  duaration:  
+  expenses: 0.06 
+  quality: AAA 
+  idx_name: Bloomberg Barclays U.S. 3–10 Year Treasury Bond Index 
+  group: Schwab 
+  description: Intermediate Treasuries 
+
+TLT:  
+  symbol: TLT 
+  maturity: 26.02 
+  duaration:  
+  expenses: 0.15 
+  quality: AAA 
+  idx_name: ICE U.S. Treasury 20+ Year Bond Index 
+  group: IShares 
+  description: Long Term Treasury 
+
+VBR:  
+  symbol: VBR 
+  maturity:  
+  duaration:  
+  expenses: 0.07 
+  quality:  
+  idx_name: CRSP US Large Cap Value Index 
+  group: Vanguard 
+  description: US SmallCap, Value 
+
+VNQ:  
+  symbol: VNQ 
+  maturity:  
+  duaration:  
+  expenses: 0.12 
+  quality:  
+  idx_name: MSCI US REIT Index 
+  group: Vanguard 
+  description: US REITS 
+
+VTIP:  
+  symbol: VTIP 
+  maturity: 2.6 
+  duaration:  
+  expenses: 0.07 
+  quality: AAA 
+  idx_name: Bloomberg Barclays U.S. Treasury Inflation-Protected Securities (TIPS) 0-5 Year Index, Bond 
+  group: Vanguard 
+  description: Short Term TIPS 
+
+VTV:  
+  symbol: VTV 
+  maturity:  
+  duaration:  
+  expenses: 0.06 
+  quality:  
+  idx_name: CRSP US Small Cap Value Index 
+  group: Vanguard 
+  description: US LargeCap, Value 
+
+DGS:  
+  symbol: DGS 
+  maturity:  
+  duaration:  
+  expenses: 0.63 
+  quality:  
+  idx_name: WisdomTree Emerging Markets SmallCap Dividend Index 
+  group: WisdomTree 
+  description: Emerging Markets, SmallCap, Value 
+
+IEFA:  
+  symbol: IEFA 
+  maturity:  
+  duaration:  
+  expenses: 0.08 
+  quality:  
+  idx_name: MSCI EAFE IMI Index 
+  group: IShares 
+  description: International Developed 
+
+SCHB:  
+  symbol: SCHB 
+  maturity:  
+  duaration:  
+  expenses: 0.03 
+  quality:  
+  idx_name: Dow Jones U.S. Broad Stock Market Index 
+  group: Schwab 
+  description: US Stock Market 
+
+SCHE:  
+  symbol: SCHE 
+  maturity:  
+  duaration:  
+  expenses: 0.13 
+  quality:  
+  idx_name: FTSE Emerging Index 
+  group: Schwab 
+  description: Emerging Markets 
+
+SCHO:  
+  symbol: SCHO 
+  maturity: 2.0 
+  duaration:  
+  expenses: 0.06 
+  quality: AAA 
+  idx_name: Bloomberg Barclays U.S. 1–3 Year Treasury Bond Index 
+  group: Schwab 
+  description: Short Term Treasury 
+
+SCZ:  
+  symbol: SCZ 
+  maturity:  
+  duaration:  
+  expenses: 0.4 
+  quality:  
+  idx_name: MSCI EAFE Small-Cap Index 
+  group: IShares 
+  description: International Developed, SmallCap 
+
+VBMPX:  
+  symbol: VBMPX 
+  maturity: 8.4 
+  duaration:  
+  expenses: 0.15 
+  quality:  
+  idx_name: Bloomberg Barclays U.S. Aggregate Float Adjusted Index 
+  group: Vanguard 
+  description: US Investment Grade Bonds 
+
+VEMPX:  
+  symbol: VEMPX 
+  maturity:  
+  duaration:  
+  expenses: 0.06 
+  quality:  
+  idx_name: Spliced Extended Market Index 
+  group: Vanguard 
+  description: US, MidCap, SmallCap 
+
+VTPSX:  
+  symbol: VTPSX 
+  maturity: 8.4 
+  duaration:  
+  expenses: 0.07 
+  quality:  
+  idx_name: Spl Total International Stock Index* 
+  group: Vanguard 
+  description: Internation EX US 
+
+LTVPX:  
+  symbol: LTVPX 
+  maturity:  
+  duaration:  
+  expenses:  
+  quality:  
+  idx_name:  
+  group:  
+  description:  
+

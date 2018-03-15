@@ -1,25 +1,19 @@
 ActiveAdmin.register Ticker do
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
-  # permit_params :list, :of, :attributes, :on, :model
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:permitted, :attributes]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
-
   config.sort_order = 'symbol_asc'
-  
+
   controller do
+    def scoped_collection
+      if !current_admin_user.admin
+        super.includes(:holdings, :accounts).where(accounts: {admin_user_id: current_admin_user.id})
+      end
+    end
     def permitted_params
       params.permit!
     end
   end
 
+  filter :symbol, as: :string
+  
   index do
     column :symbol
     column :base_type

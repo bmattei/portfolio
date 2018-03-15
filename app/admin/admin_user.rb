@@ -1,6 +1,20 @@
 ActiveAdmin.register AdminUser do
-  permit_params :email, :password, :password_confirmation
+  permit_params :email, :password, :password_confirmation, :admin
+  menu :if => proc{ current_admin_user.admin? }
 
+  controller do
+    before_action :superadmin_filter
+    def superadmin_filter
+      raise ActionController::RoutingError.new('Not Found') unless current_admin_user.admin?
+    end
+    def update
+      if params[:admin_user][:password].blank?
+        params[:admin_user].delete("password")
+        params[:admin_user].delete("password_confirmation")
+      end
+      super
+    end
+  end
   index do
     selectable_column
     id_column
@@ -21,6 +35,7 @@ ActiveAdmin.register AdminUser do
       f.input :email
       f.input :password
       f.input :password_confirmation
+      f.input :admin, label: :admin
     end
     f.actions
   end

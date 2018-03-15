@@ -9,3 +9,18 @@ one: {}
 #
 two: {}
 #  column: value
+
+administrator:
+	email: admin@mwbi.net
+  encypted_password: <%= Devise::Encryptor.digest(User, 'administrator_pw') %>
+	admin: true
+
+laura:
+	email: naturallaura@gmail.com
+  encypted_password: <%= Devise::Encryptor.digest(User, 'laura_pw') %>
+	admin: true
+
+mary:
+	email: mary@gmail.com
+  encypted_password: <%= Devise::Encryptor.digest(User, 'mary_pw') %>
+	admin: true

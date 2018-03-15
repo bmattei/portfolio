@@ -9,3 +9,29 @@ one: {}
 #
 two: {}
 #  column: value
+
+laura_taxable:
+	name: laura taxable
+	account_number: 111
+	brokerage: Fidelity
+	account_type: taxable
+	admin_user: laura
+	cash: 1000
+
+laura_taxdeferred:
+	name: laura tax deferred
+	account_number: 112
+	brokerage: Fidelity
+	account_type: taxDefered
+	admin_user: laura
+	cash: 20000
+
+laura_taxFree:
+	name: laura taxable
+	account_number: 113
+	brokerage: Fidelity
+	account_type: taxable
+	admin_user: laura
+	cash: 20000
+
+	

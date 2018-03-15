@@ -3,47 +3,47 @@ ActiveAdmin.register_page "Dashboard" do
   menu priority: 1, label: proc{ I18n.t("active_admin.dashboard") }
 
   content title: proc{ I18n.t("active_admin.dashboard") } do
-    equity = Account.equity_value
-    bond = Account.bond_value
-    cash = Account.cash
-    total = Account.total_value
-    other = Account.other_value
+    equity = current_admin_user.equity_value()
+    bond = current_admin_user.bond_value()
+    cash = current_admin_user.cash()
+    total = current_admin_user.total_value()
+    other = current_admin_user.other_value()
 
-    domestic = Account.category_value(base_type: :equity, domestic: true)
-    domestic_large = Account.category_value(base_type: :equity, reit: false, domestic: true, size: :largeCap)
-    domestic_mid = Account.category_value(base_type: :equity, reit: false, domestic: true, size: :midCap)
-    domestic_small = Account.category_value(base_type: :equity, reit: false, domestic: true, size: :smallCap)
+    domestic = current_admin_user.category_value( base_type: :equity, domestic: true)
+    domestic_large = current_admin_user.category_value( base_type: :equity, reit: false, domestic: true, size: :largeCap)
+    domestic_mid = current_admin_user.category_value( base_type: :equity, reit: false, domestic: true, size: :midCap)
+    domestic_small = current_admin_user.category_value( base_type: :equity, reit: false, domestic: true, size: :smallCap)
 
-    domestic_reit = Account.category_value(base_type: :equity, reit: true, domestic: true)
+    domestic_reit = current_admin_user.category_value( base_type: :equity, reit: true, domestic: true)
 
-    foreign_reit =  Account.category_value(base_type: :equity, reit: true, domestic: false)
+    foreign_reit =  current_admin_user.category_value( base_type: :equity, reit: true, domestic: false)
 
 
 
-    foreign = Account.category_value(base_type: :equity, domestic: false)
-    foreign_large = Account.category_value(base_type: :equity, reit: false, domestic: false, size: :largeCap)
-    foreign_mid = Account.category_value(base_type: :equity, reit: false, domestic: false, size: :midCap)
-    foreign_small = Account.category_value(base_type: :equity, reit: false, domestic: false, size: :smallCap)
+    foreign = current_admin_user.category_value( base_type: :equity, domestic: false)
+    foreign_large = current_admin_user.category_value( base_type: :equity, reit: false, domestic: false, size: :largeCap)
+    foreign_mid = current_admin_user.category_value( base_type: :equity, reit: false, domestic: false, size: :midCap)
+    foreign_small = current_admin_user.category_value( base_type: :equity, reit: false, domestic: false, size: :smallCap)
 
-    foreign_developed  = Account.category_value(base_type: :equity, domestic: false, emerging: false)
-    foreing_developed_large = Account.category_value(base_type: :equity, domestic: false, emerging: false, size: :largeCap)
-    foreign_developed_mid = Account.category_value(base_type: :equity, domestic: false, emerging: false, size: :midCap)
-    foreign_developed_small = Account.category_value(base_type: :equity, domestic: false, emerging: false, size: :smallCap)
+    foreign_developed  = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: false)
+    foreing_developed_large = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: false, size: :largeCap)
+    foreign_developed_mid = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: false, size: :midCap)
+    foreign_developed_small = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: false, size: :smallCap)
 
-    foreign_emerging = Account.category_value(base_type: :equity, domestic: false, emerging: true)
-    foreing_emerging_large = Account.category_value(base_type: :equity, domestic: false, emerging: true, size: :largeCap)
-    foreing_emerging__mid = Account.category_value(base_type: :equity, domestic: false, emerging: true, size: :midCap)
-    foreing_emerging_small = Account.category_value(base_type: :equity, domestic: false, emerging: true, size: :smallCap)
+    foreign_emerging = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: true)
+    foreing_emerging_large = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: true, size: :largeCap)
+    foreing_emerging__mid = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: true, size: :midCap)
+    foreing_emerging_small = current_admin_user.category_value( base_type: :equity, domestic: false, emerging: true, size: :smallCap)
 
-    nominal = Account.category_value(base_type: :bond, inflation_adjusted: false)
-    nominal_long = Account.category_value(base_type: :bond, duration: :long, inflation_adjusted: false)
-    nominal_intermediate = Account.category_value(base_type: :bond, duration: :intermediate, inflation_adjusted: false)
-    nominal_short = Account.category_value(base_type: :bond, duration: :short, inflation_adjusted: false)
+    nominal = current_admin_user.category_value( base_type: :bond, inflation_adjusted: false)
+    nominal_long = current_admin_user.category_value( base_type: :bond, duration: :long, inflation_adjusted: false)
+    nominal_intermediate = current_admin_user.category_value( base_type: :bond, duration: :intermediate, inflation_adjusted: false)
+    nominal_short = current_admin_user.category_value( base_type: :bond, duration: :short, inflation_adjusted: false)
 
-    tip = Account.category_value(base_type: :bond, inflation_adjusted: true)
-    tip_long = Account.category_value(base_type: :bond, duration: :long, inflation_adjusted: true)
-    tip_intermediate = Account.category_value(base_type: :bond, duration: :intermediate, inflation_adjusted: true)
-    tip_short = Account.category_value(base_type: :bond, duration: :short, inflation_adjusted: true)
+    tip = current_admin_user.category_value( base_type: :bond, inflation_adjusted: true)
+    tip_long = current_admin_user.category_value( base_type: :bond, duration: :long, inflation_adjusted: true)
+    tip_intermediate = current_admin_user.category_value( base_type: :bond, duration: :intermediate, inflation_adjusted: true)
+    tip_short = current_admin_user.category_value( base_type: :bond, duration: :short, inflation_adjusted: true)
 
     
     allocation = [
@@ -563,7 +563,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     
     panel "Holdings" do
-      summary_info = Account.summary_info
+      summary_info = current_admin_user.summary_info
       allocation = summary_info.collect {|x| [x.symbol, x.value]}
       render :partial => '/admin/pie_chart',
              :locals => {allocation: allocation, id: 'holdings-pie-chart'}
@@ -571,7 +571,7 @@ ActiveAdmin.register_page "Dashboard" do
 
     end
     panel "Holdings_no_cash" do
-      summary_info = Account.summary_info
+      summary_info = current_admin_user.summary_info
       
       allocation = summary_info.find_all {|x| !x.symbol.eql?("CASH") }.collect {|x| [x.symbol, x.value]}
       render :partial => '/admin/pie_chart',

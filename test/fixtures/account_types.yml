@@ -9,3 +9,15 @@ one: {}
 #
 two: {}
 #  column: value
+
+taxable:
+	id: 1
+	description: Post Tax Savings, but earnings are taxable
+
+taxDeferred:
+	id: 2
+	description: Pre Tax Savings, will be taxed when withdrawn
+
+taxFree:
+	id: 3
+	description: Post Tax Savings, earning are tax free 

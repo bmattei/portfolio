@@ -9,3 +9,23 @@ one: {}
 #
 two: {}
 #  column: value
+
+lauraOne:
+  account: lauraTaxdeferred
+  ticker:  VNQ
+	shares:  100
+	purchase_price: 75.50
+
+lauraTwo:
+  account: lauraTaxable
+  ticker:  VBR
+	shares:  75
+	purchase_price: 48.00
+
+lauraThree:
+  account: lauraTaxfree
+  ticker:  EFV
+	shares:  75
+	purchase_price: 28.00
+
+

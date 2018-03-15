@@ -9,13 +9,16 @@ class Account < ActiveRecord::Base
   before_save :update_values_no_save
 
 
-  def self.total_value
-    Account.all.inject(0) {|sum, n| sum +  n.total_value }
+  def self.user_accounts(admin_user_id)
+    Account.where(admin_user_id: admin_user_id)
   end
-  def self.summary_info
+  def self.total_value(admin_user_id)
+    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.total_value }
+  end
+  def self.summary_info(admin_user_id)
     summary_info = []
-    total_value = Account.total_value
-    Ticker.all.each do |t|
+    total_value = Account.total_value(admin_user_id)
+    Ticker.joins(:holdings, :accounts).where(accounts: {admin_user_id: admin_user_id}).each do |t|
       if t.holdings.count > 0
         total = t.holdings.inject(0) { |sum, n| sum + n.value }.to_f
         
@@ -33,7 +36,7 @@ class Account < ActiveRecord::Base
                                       )
       end
     end
-    total_cash =  Account.all.inject(0) {|sum, a| sum + a.cash}
+    total_cash =  Account.user_accounts(admin_user_id).inject(0) {|sum, a| sum + a.cash}
     summary_info << OpenStruct.new(symbol: "CASH",
                                    shares: nil,
                                    price: nil,
@@ -44,34 +47,37 @@ class Account < ActiveRecord::Base
 
   end
 
-  def self.equity_value
-    Account.all.inject(0) {|sum, n| sum +  n.equity_value }
+
+  
+  def self.equity_value(admin_user_id)
+    user_accounts(admin_user_id).all.inject(0) {|sum, n| sum +  n.equity_value }
   end
-  def self.foreign_value
-    Account.all.inject(0) {|sum, n| sum +  n.foreign_equity }
+  def self.foreign_value(admin_user_id)
+    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.foreign_equity }
   end
-  def self.domestic_value
-    Account.all.inject(0) {|sum, n| sum +  n.domestic_equity }
+  def self.domestic_value(admin_user_id)
+    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.domestic_equity }
   end
-  def self.bond_value
-    Account.all.inject(0) {|sum, n| sum +  n.bond_value }
+  def self.bond_value(admin_user_id)
+    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.bond_value }
   end
-  def self.cash
-    Account.all.inject(0) {|sum, n| sum +  n.cash }
+  def self.cash(admin_user_id)
+    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.cash }
   end
-  def self.other_value
-    Account.total_value - ( Account.bond_value + Account.equity_value + Account.cash.to_f)
+  def self.other_value(admin_user_id)
+    self.user_accounts(admin_user_id).total_value - ( Account.bond_value + Account.equity_value + Account.cash.to_f)
   end
-  def self.large_cap
-    Account.all.inject(0) {|sum, n| sum +  n.large_cap }
+  def self.large_cap(admin_user_id)
+    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.large_cap }
   end
-  def self.small_cap()
-    Account.all.inject(0) {|sum, n| sum +  n.small_cap }
+  def self.small_cap(admin_user_id)
+    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.small_cap }
   end
-  def self.category_value(cat_selector)
-    Account.all.inject(0) { |sum, n | sum + n.category_value(cat_selector) }
+  def self.category_value( admin_user_id, cat_selector)
+    
+    self.user_accounts(admin_user_id).all.inject(0) { |sum, n | sum + n.category_value(cat_selector) }
   end
-  def mid_cap()
+  def mid_cap(admin_user_id)
     Account.all.inject(0) {|sum, n| sum +  n.mid_cap }
   end
   def category_value(cat_selector)
@@ -101,10 +107,6 @@ class Account < ActiveRecord::Base
   def mid_cap()
     category_value(base_type: :equity, size: :midCap)
   end
-  def category_value(cat_selector)
-    holdings.inject(0) { |sum, h| sum + h.category_value(cat_selector) }
-  end
-
 
   def calc_holdings_value
     holdings.inject(0) {|sum, n | sum + n.value }

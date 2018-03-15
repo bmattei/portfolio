@@ -55,3 +55,8 @@ gem 'oauth'
 gem 'nokogiri'
 gem 'chartkick'
 gem 'i18n'
+
+group :development, :test do
+  gem 'rspec-rails', '~> 3.5'
+  gem 'factory_bot_rails'
+end

@@ -1,20 +1,7 @@
 ActiveAdmin.register Account do
-  scope_to :current_admin_user
+  scope_to :current_admin_user, unless: proc { current_admin_user.admin? }
   config.sort_order = 'total_value_desc'
   
-  # See permitted parameters documentation:
-  # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-  #
-  # permit_params :list, :of, :attributes, :on, :model
-  #
-  # or
-  #
-  # permit_params do
-  #   permitted = [:permitted, :attributes]
-  #   permitted << :other if params[:action] == 'create' && current_user.admin?
-  #   permitted
-  # end
-
   controller do
     def scoped_collection
       super.includes(:admin_user, :account_type).where(admin_user_id: current_admin_user.id).
@@ -278,7 +265,6 @@ ActiveAdmin.register Account do
     
   end
   collection_action :do_update_etrade, method: :post do
-    byebug
     pin  =   params[:notification][:token]
     access_token = consumer.get_access_token(request_token,{:oauth_verifier => pin})
 
