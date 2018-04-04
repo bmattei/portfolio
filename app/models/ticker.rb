@@ -3,41 +3,49 @@ class Ticker < ActiveRecord::Base
   has_many :holdings, dependent: :destroy
   has_many :admin_users, through: :holdings
   has_many :prices
-  has_many :categories, through: :category_tickers
   has_many  :category_tickers
-  
-  #has_many :attribute_tickers
-
+  has_many :categories, through: :category_tickers
   has_many :accounts, through: :holdings
-  #has_many :attributes, through: :attribute_tickers
+  validates :symbol, uniqueness: true
+  enum stype: [:mutual_fund, :etf, :stock, :bond]
+
   DateIdx = 0
   PriceIdx = 1
   CloseKey = '4. close'
   def self.retrieve_prices
-    Ticker.all.each do |ticker|
-      ticker.retrieve_prices
+    # All tickers that are associated with at least one holding
+    # No sense getting prices for tickers no one owns.
+    ticker_list = Ticker.all.find_all {|t| t.holdings.count > 0}.collect {|t| t.symbol}
+    quote_list = ImportPrices.getQuotes(ticker_list)
+    if !quote_list.empty?
+      ticker_list.each do |symbol|
+        ticker = Ticker.where(symbol: symbol).first
+        quote = quote_list[symbol.upcase]
+        if quote
+          date = quote[:timestamp].to_date
+          price = ticker.prices.where(price_date: date).first_or_create(price: quote[:price])
+          price.price = quote[:price]
+          price.save
+        else
+          puts "symbol not found #{ticker.symbol}"
+        end
+      end
     end
   end
-  def retrieve_prices
-      importer = ImportPrices.new(self.symbol)
-
-      prices = importer.import_prices
-      if prices
-        prices.each do |x|
-          date = x[DateIdx].to_date
-          closing_price = x[PriceIdx][CloseKey]
-          price = self.prices.where(price_date: date).first_or_create(price: closing_price)
-          # Incase record exists update it with the latest price for that date
-          price.price = closing_price
-          price.save
-        end
-      else
-        puts "symbol not found #{self.symbol}"
-      end
+  def retrieve_price
+    quote_info = ImportPrices.getBatch(self.symbol)
+    if !quote_info.empty?
+      quote = quote_info[self.symbol.upcase]
+      date = quote[:timestamp].to_date
+      price = self.prices.where(price_date: date).first_or_create(price: quote[:price])
+      price.price = quote[:price]
+      price.save
+    else
+      puts "symbol not found #{self.symbol}"
+    end
   end
   def category
     if !@category
-      puts self.symbol
       ct = category_tickers.find {|x| x.split > 0.8 }
       if ct
         @category = ct.category

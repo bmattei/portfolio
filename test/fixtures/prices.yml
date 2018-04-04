@@ -4,8 +4,100 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
+
+VWO_1:
+  ticker: VWO
+  price:  41.00
+  price_date:   Price_DateTime.now
+
+EFV_1:
+  ticker: EFV
+  price:  88.01
+  price_date:   Price_DateTime.now
+
+SCHP_1:
+  ticker: SCHP
+  price:  89.22
+  price_date:   Price_DateTime.now
+
+SCHR_1:
+  ticker: SCHR
+  price:  39.22
+  price_date:   Price_DateTime.now
+
+TLT_1:
+  ticker: TLT
+  price:  123.22
+  price_date:   Price_DateTime.now
+
+VBR_1:
+  ticker: VBR
+  price:  23.55
+  price_date:   Price_DateTime.now
+
+VNQ_1:
+  ticker: VNQ
+  price:  33.98
+  price_date:   Price_DateTime.now
+
+VTIP_1:
+  ticker: VTIP
+  price:  73.78
+  price_date:   Price_DateTime.now
+
+VTV_1:
+  ticker: VTV
+  price:  90.62
+  price_date:   Price_DateTime.now
+
+DGS_1:
+  ticker: DGS
+  price:  67.12
+  price_date:   Price_DateTime.now
+
+
+IEFA_1:
+  ticker: IEFA
+  price:  34.66
+  price_date:   Price_DateTime.now
+
+SCHB_1:
+  ticker: SCHB
+  price:  45.70
+  price_date:   Price_DateTime.now
+
+SCHE_1:
+  ticker: SCHB
+  price:  38.07
+  price_date:   Price_DateTime.now
+
+SCHO_1:
+  ticker: SCHO
+  price:  110.93
+  price_date:   Price_DateTime.now
+
+SCZ_1:
+  ticker: SCZ
+  price:  81.34
+  price_date:   Price_DateTime.now
+
+VBMPX_1:
+  ticker: VBMPX
+  price:  41.94
+  price_date:   Price_DateTime.now
+
+VEMPX_1:
+  ticker: VEMPX
+  price:  52.05
+  price_date:   Price_DateTime.now
+
+VTPSX_1:
+  ticker: VTPSX 
+  price:  96.49
+  price_date:   Price_DateTime.now
+
+LTVPX_1:
+  ticker: LTVPX
+  price:  51.60
+  price_date:   Price_DateTime.now
+

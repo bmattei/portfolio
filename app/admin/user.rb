@@ -1,4 +1,4 @@
-ActiveAdmin.register User do
+ActiveAdmin.register User, as: "SS_USER" do
 # See permitted parameters documentation:
 # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
 #
@@ -12,6 +12,7 @@ ActiveAdmin.register User do
 #   permitted
 # end
 
+  menu label: 'SS_USER'
   controller do
     def permitted_params
       params.permit!

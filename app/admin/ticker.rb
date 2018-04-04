@@ -1,11 +1,10 @@
 ActiveAdmin.register Ticker do
+  menu priority: 60
   config.sort_order = 'symbol_asc'
 
   controller do
     def scoped_collection
-      if !current_admin_user.admin
-        super.includes(:holdings, :accounts).where(accounts: {admin_user_id: current_admin_user.id})
-      end
+        super.includes(:holdings, :accounts)
     end
     def permitted_params
       params.permit!
@@ -17,14 +16,16 @@ ActiveAdmin.register Ticker do
   index do
     column :symbol
     column :base_type
-    column 'size or duration' do |t|
-      if t.size
-        t.size
-      else
-        t.duration
-      end
-    end
-    column :foreign
+    column :description
+    
+    # column 'size or duration' do |t|
+    #   if t.size
+    #     t.size
+    #   else
+    #     t.duration
+    #   end
+    # end
+    # column :foreign
     column :price , :class => 'text-right' do |t|
       number_to_currency t.last_price
     end

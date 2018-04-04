@@ -1,6 +1,6 @@
 ActiveAdmin.register_page "Dashboard" do
 
-  menu priority: 1, label: proc{ I18n.t("active_admin.dashboard") }
+  menu priority: 90, label: proc{ I18n.t("active_admin.dashboard") }
 
   content title: proc{ I18n.t("active_admin.dashboard") } do
     equity = current_admin_user.equity_value()
@@ -561,9 +561,9 @@ ActiveAdmin.register_page "Dashboard" do
 
 
 
+    summary_info = current_admin_user.summary_info
     
     panel "Holdings" do
-      summary_info = current_admin_user.summary_info
       allocation = summary_info.collect {|x| [x.symbol, x.value]}
       render :partial => '/admin/pie_chart',
              :locals => {allocation: allocation, id: 'holdings-pie-chart'}
@@ -571,8 +571,6 @@ ActiveAdmin.register_page "Dashboard" do
 
     end
     panel "Holdings_no_cash" do
-      summary_info = current_admin_user.summary_info
-      
       allocation = summary_info.find_all {|x| !x.symbol.eql?("CASH") }.collect {|x| [x.symbol, x.value]}
       render :partial => '/admin/pie_chart',
              :locals => {allocation: allocation, id: 'holdings-pie-chart'}

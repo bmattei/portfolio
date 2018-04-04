@@ -7,6 +7,7 @@ class Holding < ActiveRecord::Base
   delegate :symbol, :description, :maturity, :duration, :expenses, :quality, :group, to: :ticker, prefix: false, allow_nil: true
   has_many :category_tickers, through: :ticker
   has_many :categories, through: :category_tickers
+  validates_presence_of :account_id, :ticker_id
 
   def cost
     shares * purchase_price + commissions

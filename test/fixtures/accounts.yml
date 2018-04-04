@@ -4,34 +4,29 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
 
-laura_taxable:
-	name: laura taxable
-	account_number: 111
-	brokerage: Fidelity
-	account_type: taxable
-	admin_user: laura
-	cash: 1000
+lauraTaxable:
+  name: laura taxable
+  account_number: 111
+  brokerage: Fidelity
+  account_type: taxable
+  admin_user: laura
+  cash: 1000
 
-laura_taxdeferred:
-	name: laura tax deferred
-	account_number: 112
-	brokerage: Fidelity
-	account_type: taxDefered
-	admin_user: laura
-	cash: 20000
+lauraTaxDeferred:
+  name: laura tax deferred
+  account_number: 112
+  brokerage: Fidelity
+  account_type: taxDefered
+  admin_user: laura
+  cash: 20000
 
-laura_taxFree:
-	name: laura taxable
-	account_number: 113
-	brokerage: Fidelity
-	account_type: taxable
-	admin_user: laura
-	cash: 20000
+lauraTaxFree:
+  name: laura taxable
+  account_number: 113
+  brokerage: Fidelity
+  account_type: taxable
+  admin_user: laura
+  cash: 20000
 
-	
+  

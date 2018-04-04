@@ -35,6 +35,9 @@ module CategorySplit
 
   def category_value(sub_cat)
     if self.ticker_id
+      if !self.ticker
+        byebug
+      end
       self.value * self.ticker.value_percent(sub_cat)
     else
       0

@@ -4,20 +4,14 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
-
 taxable:
-	id: 1
-	description: Post Tax Savings, but earnings are taxable
+  id: 1
+  description: Post Tax Savings, but earnings are taxable
 
 taxDeferred:
-	id: 2
-	description: Pre Tax Savings, will be taxed when withdrawn
+  id: 2
+  description: Pre Tax Savings, will be taxed when withdrawn
 
 taxFree:
-	id: 3
-	description: Post Tax Savings, earning are tax free 
+  id: 3
+  description: Post Tax Savings, earning are tax free 

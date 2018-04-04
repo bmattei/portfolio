@@ -1,7 +1,7 @@
 VWO:  
   symbol: VWO 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.14 
   quality:  
   idx_name: FTSE Emerging Markets All Cap China A Inclusion Index 
@@ -11,7 +11,7 @@ VWO:
 EFV:  
   symbol: EFV 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.4 
   quality:  
   idx_name: MSCI EAFE Value Index 
@@ -21,7 +21,7 @@ EFV:
 SCHP:  
   symbol: SCHP 
   maturity: 8.35 
-  duaration:  
+  duration:  
   expenses: 0.05 
   quality: AAA 
   idx_name: Bloomberg Barclays U.S. Treasury Inflation Protected Securities (TIPS) Index 
@@ -31,7 +31,7 @@ SCHP:
 SCHR:  
   symbol: SCHR 
   maturity: 5.57 
-  duaration:  
+  duration:  
   expenses: 0.06 
   quality: AAA 
   idx_name: Bloomberg Barclays U.S. 3–10 Year Treasury Bond Index 
@@ -41,7 +41,7 @@ SCHR:
 TLT:  
   symbol: TLT 
   maturity: 26.02 
-  duaration:  
+  duration:  
   expenses: 0.15 
   quality: AAA 
   idx_name: ICE U.S. Treasury 20+ Year Bond Index 
@@ -51,7 +51,7 @@ TLT:
 VBR:  
   symbol: VBR 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.07 
   quality:  
   idx_name: CRSP US Large Cap Value Index 
@@ -61,7 +61,7 @@ VBR:
 VNQ:  
   symbol: VNQ 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.12 
   quality:  
   idx_name: MSCI US REIT Index 
@@ -71,7 +71,7 @@ VNQ:
 VTIP:  
   symbol: VTIP 
   maturity: 2.6 
-  duaration:  
+  duration:  
   expenses: 0.07 
   quality: AAA 
   idx_name: Bloomberg Barclays U.S. Treasury Inflation-Protected Securities (TIPS) 0-5 Year Index, Bond 
@@ -81,7 +81,7 @@ VTIP:
 VTV:  
   symbol: VTV 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.06 
   quality:  
   idx_name: CRSP US Small Cap Value Index 
@@ -91,7 +91,7 @@ VTV:
 DGS:  
   symbol: DGS 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.63 
   quality:  
   idx_name: WisdomTree Emerging Markets SmallCap Dividend Index 
@@ -101,7 +101,7 @@ DGS:
 IEFA:  
   symbol: IEFA 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.08 
   quality:  
   idx_name: MSCI EAFE IMI Index 
@@ -111,7 +111,7 @@ IEFA:
 SCHB:  
   symbol: SCHB 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.03 
   quality:  
   idx_name: Dow Jones U.S. Broad Stock Market Index 
@@ -121,7 +121,7 @@ SCHB:
 SCHE:  
   symbol: SCHE 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.13 
   quality:  
   idx_name: FTSE Emerging Index 
@@ -131,7 +131,7 @@ SCHE:
 SCHO:  
   symbol: SCHO 
   maturity: 2.0 
-  duaration:  
+  duration:  
   expenses: 0.06 
   quality: AAA 
   idx_name: Bloomberg Barclays U.S. 1–3 Year Treasury Bond Index 
@@ -141,7 +141,7 @@ SCHO:
 SCZ:  
   symbol: SCZ 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.4 
   quality:  
   idx_name: MSCI EAFE Small-Cap Index 
@@ -151,7 +151,7 @@ SCZ:
 VBMPX:  
   symbol: VBMPX 
   maturity: 8.4 
-  duaration:  
+  duration:  
   expenses: 0.15 
   quality:  
   idx_name: Bloomberg Barclays U.S. Aggregate Float Adjusted Index 
@@ -161,7 +161,7 @@ VBMPX:
 VEMPX:  
   symbol: VEMPX 
   maturity:  
-  duaration:  
+  duration:  
   expenses: 0.06 
   quality:  
   idx_name: Spliced Extended Market Index 
@@ -171,7 +171,7 @@ VEMPX:
 VTPSX:  
   symbol: VTPSX 
   maturity: 8.4 
-  duaration:  
+  duration:  
   expenses: 0.07 
   quality:  
   idx_name: Spl Total International Stock Index* 
@@ -181,7 +181,7 @@ VTPSX:
 LTVPX:  
   symbol: LTVPX 
   maturity:  
-  duaration:  
+  duration:  
   expenses:  
   quality:  
   idx_name:  

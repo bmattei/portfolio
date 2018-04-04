@@ -3,34 +3,86 @@ class ImportPrices
   ApiKey = 'I50S'
 
   # Compact returns only last 10 data points
-  
-  def initialize(ticker, compact=true, daily=true)
-    series = 'TIME_SERIES_DAILY'
-    @key = "Time Series (Daily)"
-    if !daily
-      series = 'TIME_SERIES_WEEKLY'
-      @key = "Weekly Time Series"
+  TIME_SERIES_DAILY = "Time Series (Daily)"
+
+  def self.getLastPrice(symbol)
+    symbol = symbol.upcase
+    quote_list = self.getDaily(symbol)
+    quote = {}
+    if !quote_list.empty?
+      last_date = quote_list.keys.sort{|a, b| a <=> b }.last
+      quote[:price]  = quote_list[last_date][:at_close].to_f
+      quote[:date] = last_date
     end
-    @ticker = ticker
-    @compact = compact
-    if compact
-      @uri_str = "https://www.alphavantage.co/query?function=#{series}&symbol=#{ticker.upcase}&apikey=#{ApiKey}&outputsize=compact"
-    else
-      @uri_str = "https://www.alphavantage.co/query?function=#{series}&symbol=#{ticker.upcase}&apikey=#{ApiKey}"
-    end
+    quote
   end
 
+  def self.getDaily(symbol)
+    puts "get daily #{symbol}"
+    ticker = symbol.upcase
     
-  def import_prices
-    uri = URI(@uri_str)
+    uri_string = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{symbol}&apikey=I50S&outputsize=compact"
+    uri = URI(uri_string)
+    resp =  Net::HTTP.get_response(uri)
+    quote_list= {}
+    begin
+      quote_info = JSON.parse(resp.body)[TIME_SERIES_DAILY]
+      
+      quote_info.each do |qdate, qinfo|
+        quote_list[qdate.to_date] = {
+          at_open:  qinfo["1. open"],
+          high: qinfo["2. high"],
+          low:  qinfo["3. low"],
+          at_close:  qinfo["4. close"],
+          volume: qinfo["5. volume"]
+        }
+      end
+    rescue
+      
+    end
+    quote_list
+  end
+  def self.getQuotes(symbols)
+    symbols = symbols.collect {|s| s.upcase}
+    quotes = self.getBatch(symbols)
+    symbols.each do |s|
+      if !quotes[s]
+        q = self.getLastPrice(s)
+        if !quotes.empty?
+          quotes[s] = { price: q[:price],
+                        timestamp: q[:date]
+                      }
+        end
+      end
+    end
+    quotes
+  end
+  private
+  def self.getBatch(symbols)
+    symbols = symbols.collect {|s| s.upcase}
+    uri_string = nil
+    return_quotes = {}
+    if symbols.is_a?(Array)
+      uri_string = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=#{symbols.join(',')}&apikey=#{ApiKey}"
+    else
+      uri_string = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=#{symbols}&apikey=#{ApiKey}"
+    end
+    uri = URI(uri_string)
     begin
       resp = Net::HTTP.get_response(uri)
-      prices = JSON.parse(resp.body)[@key]
+      stock_quotes = JSON.parse(resp.body)["Stock Quotes"]
+      stock_quotes.each do |x|
+        symbol = x['1. symbol']
+        price = x['2. price']
+        timestamp = x['4. timestamp']
+        return_quotes[symbol] = {price: price.to_f,
+                                 timestamp: timestamp
+                                }
+      end
     rescue
-
     end
+    return_quotes
   end
-
 end
 
 

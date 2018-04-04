@@ -1,0 +1,267 @@
+
+* 1/19/2018
+
+- Fix n+1 problem performance
+- Add full categories support - Size/emerging etc.
+   
+- Add Graphs to charts.
+- Add ability to update fund - portfolio info progrmatically.
+DONE
+ - changed dashboard
+    - handle Emerging markets
+		- Do percentages as a sperate row
+
+ - Chartkick: https://spin.atomicobject.com/2016/11/23/adding-google-charts-active-admin-application/
+ - changed gem file to include chartkick
+   gem 'chartkick'
+	 > bundle install
+ - ~/projects/portfolio/config/initializers/active_admin.rb
+   add:
+      config.register_javascript 'https://www.google.com/jsapi'
+ - app/assets/javascripts/active_admin.js.coffee, add:
+
+#= require chartkick
+	
+* 6/18
+
+http://my.jetpack/connected_devices/
+rails s --binding=0.0.0.0
+
+   I am still trying to figure out how to oauth into etrade.  The only thing I have that is working a little is:
+	 /projects/ruby-etrade
+
+   This uses oauth to get a request token.
+	 consumer = OAuth::Consumer.new(CONSUMER_TOKEN[:token],CONSUMER_TOKEN[:secret],{:site => "https://etws.etrade.com", :http_method => :get})
+
+   Omniauth related dirs:
+	    rails-omniauth - is a rails 5.0 project which uses Omniauth to verify user logins.  So you can use facebook or twitter etc to login
+			                  to this sample app.  This is using Omniauth as a means to verify users logging to this app (server) it is not example
+												of being an omniauth client.
+			ruby-etrade - contains scripts that use the 'Oauth' gem to do the token exchange with etrade.  The token requires user intervention because
+			              it uses OOB (out of band) so
+
+In file consumer_token.rb:
+   CONSUMER_TOKEN = {
+   :token => '4ec7afd53c54bbd92fcf6ac52c72c4f7',
+   :secret => 'a4164ad86bb63633af13adc2caecd6c8'
+}
+
+
+In your browser, go to https://us.etrade.com/e/t/etws/authorize?key=4ec7afd53c54bbd92fcf6ac52c72c4f7&token=uZutb6eV45nJMoQz8cGRxWkJ8nhvJOhFWrzWukFMmfU%3D
+Once you have authorized this app, enter your pin here and press enter:
+QGW35
+Now copy and paste the following hash into a new file in this directory called access_token.rb
+ACCESS_TOKEN = {
+  :token => "q9gOQKCNb0CL8PsQErt7RL8yt/JX9u1OXnCqQllXgrc=",
+  :secret => "3y9L4r9PHFALwy07HyukkqOzw4NSx0ms0CG+o7t3YWo="
+}
+>> CREATE FILE AS SPECIFIED ABOVE
+
+>>
+ruby -I. test_get_account_list.rb
+
+{"accountDesc"=>"MyAccount-1", "accountId"=>30049872, "marginLevel"=>"MARGIN", "netAccountValue"=>9999871.82, "registrationType"=>"INDIVIDUAL"}
+{"accountDesc"=>"MyAccount-2", "accountId"=>83405188, "marginLevel"=>"MARGIN", "netAccountValue"=>"10086354.52", "registrationType"=>"INDIVIDUAL"}
+{"accountDesc"=>"MyAccount-3", "accountId"=>83405553, "marginLevel"=>"CASH", "netAccountValue"=>"100105468.99", "registrationType"=>"INDIVIDUAL"}
+{"accountDesc"=>"MyAccount-4", "accountId"=>83405557, "marginLevel"=>"MARGIN", "netAccountValue"=>"49402774.02", "registrationType"=>"INDIVIDUAL"}
+{"accountDesc"=>"MyAccount-5", "accountId"=>83406373, "marginLevel"=>"CASH", "netAccountValue"=>"100118309.90", "registrationType"=>"INDIVIDUAL"}
+{"accountDesc"=>"MyAccount-6", "accountId"=>83412346, "marginLevel"=>"MARGIN", "netAccountValue"=>"10086354.52", "registrationType"=>"INDIVIDUAL"}
+{"accountDesc"=>"MyAccount-7", "accountId"=>83412345, "marginLevel"=>"CASH", "netAccountValue"=>"100105466.00", "registrationType"=>"INDIVIDUAL"}
+{"accountDesc"=>"SIMPLE IRA", "accountId"=>83491757, "marginLevel"=>"CASH", "netAccountValue"=>99794.13, "registrationType"=>"IRA"}
+										
+* 6/17
+  From  ~/projects/omniauth-etrade/lib/omniauth/strategies/etrade.com
+
+option :client_options, {
+        :site               => 'https://etws.etrade.com',
+        :authorize_url      => 'https://us.etrade.com/e/t/etws/authorize',
+        :request_token_url  => 'https://etws.etrade.com/oauth/request_token',
+        :access_token_url   => 'https://etws.etrade.com/oauth/access_token',
+        # default http_method for oauth gem is post, however etrade requires this
+        # to be get
+        :http_method => :get
+      }
+
+			
+* 6/9
+
+curl -d "client_id=4ec7afd53c54bbd92fcf6ac52c72c4f7&\
+  client_secret=a4164ad86bb63633af13adc2caecd6c8&\
+  redirect_uri=http://localhost/etc&\
+  grant_type=authorization_code&\
+  code=CODE" https://etrade.com/o/oauth2/tokenhttps://etrade.com/o/oauth2/token
+	
+
+export ETRADE_KEY=4ec7afd53c54bbd92fcf6ac52c72c4f7
+export ETRADE_SECRET=a4164ad86bb63633af13adc2caecd6c8
+
+** ETRADE OAUTH: https://us.etrade.com/ctnt/dev-portal/getContent?contentUri=V0_Documentation-DeveloperGuides-Authorization
+
+Service Provider - ETRADE
+user - me
+Consumer - webist or application that uses )AUTH to access the service provider: My PORTFOLIO rails app.
+
+*** Three steps
+
+     1.  SP authenticates the consumer.
+		 2.  SP authenticates the user
+		 3.  The user authorizies the consumer.
+
+*** Etrade life cycle
+     1) The application uses 'Get Request Token API' with it's client_id and client_secret to acquire get a 'temporary request token'
+		    GET https://etws.etrade.com/oauth/request_token
+
+Property	Type	Description
+
+oauth_consumer_key	string	The value used by the consumer to identify itself to the service provider.
+oauth_timestamp	integer	The date and time of the request, in epoch time. Must be accurate within five minutes.
+oauth_nonce	string	A nonce, as described in the authorization guide - roughly, an arbitrary or random value that cannot be used again with the same timestamp.
+oauth_signature_method	string	The signature method used by the consumer to sign the request. The only supported value is "HMAC-SHA1".
+oauth_signature	string	Signature generated with the shared secret and token secret using the specified oauth_signature_method, as described in OAuth documentation.
+oauth_callback	string	Callback information, as described elsewhere. Must always be set to "oob", whether using a callback or not.
+
+https://etws.etrade.com/oauth/request_token?oauth_nonce="1234"&oauth_consumer_key="4ec7afd53c54bbd92fcf6ac52c72c4f7&asdf999asdf999"&oauth_signature_method=HMAC-SHA1
+
+http://techbus.safaribooksonline.com/book/programming/python/9781784394783/7dot-dinnerly-recipe-sharing/ch07lvl1sec36_html?query=((ruby+oauth))#X2ludGVybmFsX0h0bWxWaWV3P3htbGlkPTk3ODE3ODQzOTQ3ODMlMkZjaDA3bHZsMnNlYzMwX2h0bWwmcXVlcnk9KChydWJ5JTIwb2F1dGgpKQ==
+
+Consumer: This is the application that is making the request on behalf of the user. In our particular case, the Dinnerly application is considered the consumer. Confusingly enough, the official OAuth specification refers to the client instead of the consumer. Even more confusingly, some applications use the consumer *and* client terms. Usually, a consumer is represented by a key and secret that must be kept in your application configuration, and they must be well-guarded. If a malicious entity were to gain access to your consumer key and secret, they could then pretend to be your application when making authorized requests with the third-party provider.
+
+Provider: This is the third-party service that the consumer is attempting to access on behalf of a user. In our case, Twitter and Facebook are the providers that we will be using for our application signing in. Other examples of providers could be GitHub, LinkedIn, Google, and any other service that offers a grant-based OAuth authorization flow.
+Resource owner: This is the entity that is capable of consenting to the delegated resource access. In most cases, the resource owner is an end user of both the applications (for example, Twitter and Dinnerly) in question.
+
+Access token(s): This is a credential that the client uses to make requests to the provider on behalf of a user in order to access the protected resources. The token can be linked with a particular permission scope, which limits what resources it can access. Additionally, the access token may expire after a certain amount of time determined by the provider; at which point the use of a refresh token is required to obtain a new, valid access token.
+
+Authorization server: This is the server (usually represented by a URI endpoint) that is responsible for issuing access tokens to the consumer application after the resource owner has consented to delegating their access.
+
+Flow type: The OAuth 2.0 framework provides outlines of several different flows for authorization. Some are best suited for command-line applications where no web browser is present, others are better suited for native mobile applications, and some have also been created to connect devices that have very limited access capabilities (for example, if you want to delegate your Twitter account privileges to your Internet-enabled toaster). The authorization flow that we are most interested in, unsurprisingly, is the one designed for basic web browser-based access.
+
+http://techbus.safaribooksonline.com/book/web-development/web-services/9781940111308/oauth-1-client/oauth_1_client_html?query=((Oauth))#snippet
+
+OAUTH 1.0
+
+   client																																									Server
+
+   Initiate request by asking server for a request token   -------------->                return a request token
+	               			 							 		 	 				 				 																			 |
+   Redirect to 3rd Parkt Page with request token           <--------------------------------------
+	         |
+           ----------------------------------------------------------------------------> Authorize Client App
+					                                                                                     |
+   Make Request for access Tokens, Signing Request          <--------------------------- Redired to Oaut Callbakc with temporary tokens & Auth Verifier
+	  with Temporary tokens
+		           |
+               -------------------------------------------------------------------------> validates access token request and sends response to the Oauth Callback
+		Acess Tokens granted and store for user                 ----------------------------> authenticate UserIfNeeded
+		                                                                                       validate access tokens & the API request
+																																													  |
+    Serer Returns a message indicating success             <---------------------------------																																														
+* 6/6
+
+		B	Login to etrade.
+		C	See if I can get ETF portfolio Info.
+
+** I have in rails-omniauth and example omniauth app.
+
+**
+Now have rails 5.0.3 but rails server won't start
+
+**rails -s
+Could not find proper version of railties (5.0.3) in any of the sources
+Run `bundle install` to install missing gems.
+
+>> bundle install
+Could not load OpenSSL.
+You must recompile Ruby with OpenSSL support or change the sources in your Gemfile from 'https' to 'http'. Instructions for compiling with OpenSSL
+using RVM are available at rvm.io/packages/openssl.
+
+>> rvm reinstall 2.3.1 --with-openssl-dir=`brew --prefix openssl`
+   OK
+>> Bundle install
+   Gem::Ext::BuildError: ERROR: Failed to build gem native extension.
+ 
+    current directory: /Users/robertmattei/.rvm/gems/ruby-2.3.1/gems/sqlite3-1.3.13/ext/sqlite3
+
+-- Gemfile - comment out # gem 'sqlite3'
+  Now bundle install works
+
+>> rails s
+`method_missing': undefined method `action_mailer' for #<Rails::Application::Configuration:0x007fddf73bcb08> (NoMethodError)
+
+>> change Gemfile
+gem 'rails', '5.0.3'
+bundle install
+
+I'm UP AND RUNNING on 5.0.3 YEAH !!!!!
+
+NOW TRYING TO LOGIN TO ETRADE API.  I have cloned two git reposities
+projects/ruby-etrade
+projects/ominauth-etrade
+
+** ruby-etrade
+create file consumer_token.rb:
+CONSUMER_TOKEN = {
+   :token => ENV['ETRADE_KEY'],
+   :secret => ENV['ETRADE_SECRET']
+}
+
+** projects added:     devise :omniauthable, :omniauth_providers => [:etrade]
+  to models/admin_user
+	I now have new routes:
+	  admin_user_etrade_omniauth_authorize GET|POST   /admin/auth/etrade(.:format)              devise/omniauth_callbacks#passthru
+    admin_user_etrade_omniauth_callback GET|POST   /admin/auth/etrade/callback(.:format)     devise/omniauth_callbacks#etrade
+
+Download railscast 235 and unzip: /Users/robertmattei/projects/blog-after
+
+
+
+* 
+This document contains my notes on the Portfolio project.  THis code is intended to
+be a means to track my portfolio.  I've done a number of apps that pull data from
+different places is it possisble to have one central app?
+
+Should I write some services that gather data?
+
+Current concern is getting 
+omiauth-etrade to work.
+
+oauth_consumer_key: 4ec7afd53c54bbd92fcf6ac52c72c4f7 
+consumer_secret: a4164ad86bb63633af13adc2caecd6c8
+
+
+Based on this page:
+    https://github.com/athensholloway/omniauth-etrade
+
+I added this
+./config/initializers/devise.rb
+
+  config.omniauth :etrade, ENV['ETRADE_KEY'], ENV['ETRADE_SECRET']
+
+~/.bashrc
+export ETRADE_KEY=4ec7afd53c54bbd92fcf6ac52c72c4f7
+export ETRADE_SECRET=a4164ad86bb63633af13adc2caecd6c8
+
+I think I also need to add something to middleware stack - but first I need to
+understand what the middleware stack is.
+
+SIDETRACK - I'm going to update my version of rails.
+http://railsapps.github.io/updating-rails.html
+I'm currently using: 4.2.6
+
+and I'm going to upgrade to latest stable.
+
+rvm gemset list
+
+gem outdates
+shows a lot of gem out of date.
+
+Suggestion was to update to install new nokogiri first.  I had some problems
+doing that but this fixed it:
+
+xcode-select --install
+brew update
+gem install nokogiri
+
+Now: comment out rails version in gem file
+bundle update
+
+Now have rails 5.0.3 but rails server won't start

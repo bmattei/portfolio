@@ -1,4 +1,5 @@
 ActiveAdmin.register Capture do
+  menu priority: 80
   actions :all, :except => [:new]
   controller do
     def scoped_collection

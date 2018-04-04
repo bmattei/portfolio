@@ -4,23 +4,19 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
 
-administrator:
-	email: admin@mwbi.net
-  encypted_password: <%= Devise::Encryptor.digest(User, 'administrator_pw') %>
-	admin: true
+
+admin:
+  email: admin@mwbi.net
+  encrypted_password: <%= Devise::Encryptor.digest(AdminUser, 'admin_pw') %>
+  admin: true
 
 laura:
-	email: naturallaura@gmail.com
-  encypted_password: <%= Devise::Encryptor.digest(User, 'laura_pw') %>
-	admin: true
+  email: naturallaura@gmail.com
+  encrypted_password: <%= Devise::Encryptor.digest(AdminUser, 'laura_pw') %>
+  admin: false
 
 mary:
-	email: mary@gmail.com
-  encypted_password: <%= Devise::Encryptor.digest(User, 'mary_pw') %>
-	admin: true
+  email: mary@gmail.com
+  encrypted_password: <%= Devise::Encryptor.digest(AdminUser, 'mary_pw') %>
+  admin: false

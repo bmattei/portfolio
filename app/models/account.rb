@@ -4,79 +4,11 @@ class Account < ActiveRecord::Base
   
   belongs_to :admin_user
   belongs_to :account_type
-  has_many   :holdings
+  has_many   :holdings, dependent: :destroy
   accepts_nested_attributes_for :holdings
   before_save :update_values_no_save
+  after_create :update_values
 
-
-  def self.user_accounts(admin_user_id)
-    Account.where(admin_user_id: admin_user_id)
-  end
-  def self.total_value(admin_user_id)
-    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.total_value }
-  end
-  def self.summary_info(admin_user_id)
-    summary_info = []
-    total_value = Account.total_value(admin_user_id)
-    Ticker.joins(:holdings, :accounts).where(accounts: {admin_user_id: admin_user_id}).each do |t|
-      if t.holdings.count > 0
-        total = t.holdings.inject(0) { |sum, n| sum + n.value }.to_f
-        
-        summary_info << OpenStruct.new(symbol: t.symbol,
-                                     description: t.description,
-                                     expenses: t.expenses,
-                                     shares: t.holdings.sum(:shares).to_f,
-                                     price:  t.holdings.first.price.to_f,
-                                     value:  total,
-                                     equity: t.value_percent(base_type: :equity) * 100,
-                                     foreign_equity: t.value_percent(base_type: :equity,
-                                                                     domestic: false) * 100,
-                                     bond: t.value_percent(base_type: :bond) * 100,
-                                     percent: (total / total_value) * 100
-                                      )
-      end
-    end
-    total_cash =  Account.user_accounts(admin_user_id).inject(0) {|sum, a| sum + a.cash}
-    summary_info << OpenStruct.new(symbol: "CASH",
-                                   shares: nil,
-                                   price: nil,
-                                   value: total_cash,
-                                   percent: (total_cash/total_value) * 100
-                                  )
-
-
-  end
-
-
-  
-  def self.equity_value(admin_user_id)
-    user_accounts(admin_user_id).all.inject(0) {|sum, n| sum +  n.equity_value }
-  end
-  def self.foreign_value(admin_user_id)
-    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.foreign_equity }
-  end
-  def self.domestic_value(admin_user_id)
-    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.domestic_equity }
-  end
-  def self.bond_value(admin_user_id)
-    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.bond_value }
-  end
-  def self.cash(admin_user_id)
-    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.cash }
-  end
-  def self.other_value(admin_user_id)
-    self.user_accounts(admin_user_id).total_value - ( Account.bond_value + Account.equity_value + Account.cash.to_f)
-  end
-  def self.large_cap(admin_user_id)
-    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.large_cap }
-  end
-  def self.small_cap(admin_user_id)
-    self.user_accounts(admin_user_id).inject(0) {|sum, n| sum +  n.small_cap }
-  end
-  def self.category_value( admin_user_id, cat_selector)
-    
-    self.user_accounts(admin_user_id).all.inject(0) { |sum, n | sum + n.category_value(cat_selector) }
-  end
   def mid_cap(admin_user_id)
     Account.all.inject(0) {|sum, n| sum +  n.mid_cap }
   end
@@ -114,7 +46,12 @@ class Account < ActiveRecord::Base
   def cash
     self[:cash] || 0
   end
-
+  def total_value
+    if !self[:total_value]
+      update_values
+    end
+    self[:total_value]
+  end
   def update_values_no_save
     self.holdings_value = self.calc_holdings_value
     self.total_value = self.holdings_value.to_f + self.cash.to_f

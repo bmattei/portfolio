@@ -1,10 +1,10 @@
 class AdminUser < ActiveRecord::Base
     devise :database_authenticatable, 
            :recoverable, :rememberable, :trackable, :validatable
-    has_many :accounts
+    has_many :accounts, dependent: :destroy
     has_many :holdings, through: :accounts
     has_many :tickers,  through: :holdings
-    has_many :captures
+    has_many :captures, dependent: :destroy
 
     def new_capture
       c = self.captures.create(cash: self.cash)
@@ -23,13 +23,12 @@ class AdminUser < ActiveRecord::Base
       accounts.inject(0) {|sum, n| sum +  n.equity_value }
     end  
      def total_value()
-       accounts.inject(0) {|sum, n| sum +  n.total_value }
+       accounts.inject(0) {|sum, n| sum +  (n.total_value || 0) }
      end
      def summary_info
        summary_info = []
        total_value = total_value()
-       tickers.each do |t|
-         if t.holdings.count > 0
+       tickers.uniq.each do |t|
            total = t.holdings.inject(0) { |sum, n| sum + n.value }.to_f
         
            summary_info << OpenStruct.new(symbol: t.symbol,
@@ -44,7 +43,6 @@ class AdminUser < ActiveRecord::Base
                                           bond: t.value_percent(base_type: :bond) * 100,
                                           percent: (total / total_value) * 100
                                          )
-      end
     end
     total_cash =  accounts.inject(0) {|sum, a| sum + a.cash}
     summary_info << OpenStruct.new(symbol: "CASH",

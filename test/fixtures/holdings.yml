@@ -4,28 +4,35 @@
 # model remove the '{}' from the fixture names and add the columns immediately
 # below each fixture, per the syntax in the comments below
 #
-one: {}
-# column: value
-#
-two: {}
-#  column: value
 
-lauraOne:
+VNQLaura:
   account: lauraTaxdeferred
   ticker:  VNQ
-	shares:  100
-	purchase_price: 75.50
+  shares:  100
+  purchase_price: 75.50
 
-lauraTwo:
+VBRLauraTaxable:
   account: lauraTaxable
   ticker:  VBR
-	shares:  75
-	purchase_price: 48.00
+  shares:  75
+  purchase_price: 48.00
 
-lauraThree:
+SCZLauraTaxable:
+  account: lauraTaxable
+  ticker:  SCZ
+  shares:  175
+  purchase_price: 28.00
+
+TLTLauraTaxable:
+  account: lauraTaxable
+  ticker:  TLT
+  shares:  105
+  purchase_price: 58.00
+
+EFVLaura:
   account: lauraTaxfree
   ticker:  EFV
-	shares:  75
-	purchase_price: 28.00
+  shares:  750
+  purchase_price: 28.00
 
 

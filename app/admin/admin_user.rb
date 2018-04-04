@@ -1,12 +1,13 @@
-ActiveAdmin.register AdminUser do
+ActiveAdmin.register AdminUser,  as: "User"  do
+  
+  menu priority: 100, label: "Users"
   permit_params :email, :password, :password_confirmation, :admin
-  menu :if => proc{ current_admin_user.admin? }
+
+
+
+
 
   controller do
-    before_action :superadmin_filter
-    def superadmin_filter
-      raise ActionController::RoutingError.new('Not Found') unless current_admin_user.admin?
-    end
     def update
       if params[:admin_user][:password].blank?
         params[:admin_user].delete("password")
@@ -31,11 +32,13 @@ ActiveAdmin.register AdminUser do
   filter :created_at
 
   form do |f|
-    f.inputs "Admin Details" do
+    f.inputs "User Details" do
       f.input :email
       f.input :password
       f.input :password_confirmation
-      f.input :admin, label: :admin
+      if (current_admin_user.admin)
+        f.input :admin, label: :admin
+      end
     end
     f.actions
   end

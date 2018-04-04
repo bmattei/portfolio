@@ -1,4 +1,6 @@
 ActiveAdmin.register Holding do
+    menu priority: 50
+
   # See permitted parameters documentation:
   # https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
   #
@@ -16,9 +18,7 @@ ActiveAdmin.register Holding do
 
   controller do
     def scoped_collection
-      if !current_admin_user.admin
         super.includes(:ticker, :account).where(accounts: {admin_user_id: current_admin_user.id})
-      end
     end
     def permitted_params
       params.permit!
@@ -38,7 +38,9 @@ ActiveAdmin.register Holding do
 
   form do |f| 
     f.inputs do
-      input :account
+      if current_admin_user.admin 
+        input :account
+      end
       input :ticker, as: :select, collection: Ticker.all.collect {|x| [x.symbol, x.id]}
       input :shares
       input :purchase_price
@@ -53,7 +55,7 @@ ActiveAdmin.register Holding do
 
   index do
 
-    summary_info = Account.summary_info
+    summary_info = current_admin_user.summary_info
     table_for summary_info.sort {|x,y| y.value <=> x.value} do
       column :symbol
       column :shares
