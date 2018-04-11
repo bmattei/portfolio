@@ -7,15 +7,11 @@ require 'capybara'
 require 'byebug'
 require 'config/environment.rb'
 
-NAME_COL = 1
-SYMBOL_COL = 2
-ASSET_CLASS_COL = 3
-EXPENSE_COL = 4
-PRICE_COL = 5
-# http://portfolios.morningstar.com/fund/summary?t=vempx
+
 
 class MorningstarScraper
   MorningStarUrl = 'http://www.morningstar.com'
+
   @@screen_number = 1
   def initialize
     # Configurations
@@ -28,46 +24,135 @@ class MorningstarScraper
       config.default_driver = :selenium
     end
     @browser = Capybara.current_session
-    @browser.visit(MorningStarUrl) 
   end
 
-  def go_to_fund_page(name)
+  def go_to_portfolio_page(symbol)
     on_enter
-    success = try_fund_input(name)
-    if !success
-      do_and_rescue do
-        @browser.find('a.close').click
+    url_str =  "http://portfolios.morningstar.com/fund/summary?t=#{symbol}"
+    puts url_str
+    @browser.visit(url_str) 
+    @browser.title =~ /Report.*#{symbol.upcase}/
+  end
+  
+  def get_stock_style_data
+    on_enter
+
+    info = nil
+    t = do_and_rescue { @browser.find('table#equity_style_tab') }
+    if t
+      info = {}
+      capy_rows = t.all('tr')[2..-2]
+      capy_rows.each do |x|
+        text_row =  x.text
+        puts text_row
+        columns = /(\D*)\s*([\d,\.]*)/.match(text_row)
+        if columns.length > 0
+          size_sym = columns[1].strip.gsub(" ", '_').to_sym
+          info[size_sym] = columns[2].to_f/100.to_f
+        end
       end
-      success = try_fund_input(name)
-    end
-  end
-  def go_to_portfolio_page()
-    on_enter
-    success = true
-    do_and_rescue do
-      success = do_and_rescue { @browser.click_on('Portfolio') }
-    end
-    success
-  end
-  def get_style_data
-    on_enter
-    t = do_and_rescue { browser.find('table#equity_style_tab') }
-    if t
-      byebug
     else
-      byebug
+      #      
     end
+    info
   end
+  
   def get_asset_allocation_data
-    t = do_and_rescue { browser.find('table#asset_allocation_tab') }
+    on_enter
+    info = nil
+    t = do_and_rescue { @browser.find('table#asset_allocation_tab') }
     if t
-      byebug
+      info = {}
+      capy_rows = t.all('tr')[2..-2]
+      capy_rows.each do |x|
+        text_row =  x.text
+        if text_row.length > 0
+          columns =  /(\D*)(\S*)\s*(\S*)\s*(\S*)/.match(text_row)
+          asset_class = columns[1].strip.gsub(" ", '_').to_sym
+          info[asset_class] = {net: columns[2].to_f/100.to_f,
+                               short: columns[3].to_f/100.to_f,
+                               long: columns[4].to_f/100.to_f}
+        end
+      end
     else
-      byebug
+      # 
     end
+    return info
   end
-  private
 
+  def get_stats
+    on_enter
+    info = nil
+    t = do_and_rescue {@browser.find('div#styleDetails').all('table')[1] }
+
+    if t
+      capy_rows = do_and_rescue { t.all('tr')[2..-2] }
+      if capy_rows
+        info = {}
+        capy_rows.each do |capy_row|
+          text_row = capy_row.text
+          if text_row.length > 2
+            data = do_and_rescue {capy_row.all('td')[0].text }
+            if data
+              field = text_row.split[0...-1].join('_').gsub(/[\*, \(, \)]/, '').to_sym
+              info[field] = data
+            end
+          end
+        end
+      end
+    end
+    
+    info
+  end
+  CREDIT_CAPTION = "Credit Quality"
+  def get_credit_quality
+    on_enter
+    info = nil 
+    t = do_and_rescue { @browser.find('div#styleDetails').all('table')[2] }
+    if t
+      caption = do_and_rescue { t.find('caption').text }
+      if caption and caption.eql?(CREDIT_CAPTION)
+        capy_rows = do_and_rescue { t.all('tr')[2..-2] }
+        if capy_rows
+          info = {}
+          capy_rows.each do |x|
+            text_row = x.text
+            if text_row.length > 2
+              columns = /(\D*)\s*([\d,\.]*)/.match(text_row)
+              field = columns[1].strip.gsub(" ", "_").gsub(/\W/,"").to_sym
+              info[field] = columns[2].to_f
+            end
+          end
+        end
+      end
+    end
+    info
+  end
+
+  def get_category
+    result = do_and_rescue {  @browser.find("a.categoryName").text }
+  end
+
+  def extract(symbol)
+
+    scaped_info = nil
+    if go_to_portfolio_page(symbol)
+      scraped_info = {}
+      scraped_info[:category] = get_category
+      scraped_info[:equity_style_info] = get_stock_style_data
+      scraped_info[:asset_allocation] = get_asset_allocation_data
+      scraped_info[:credit_quality] = get_credit_quality
+      scraped_info[:stats] = get_stats
+    end
+    scraped_info
+  end
+
+  def close
+    @browser.driver.browser.close
+  end
+
+  private
+  
   def on_enter
     puts "ENTER " +  caller[0][/`([^']*)'/, 1]
   end
@@ -75,24 +160,10 @@ class MorningstarScraper
   def log(msg)
     puts caller[0][/`([^']*)'/, 1] + " " + msg
   end
-
-  def try_fund_input(name)
-    on_enter
-    (1..3).each do |x|
-      log("try #{x}")
-      success = do_and_rescue do
-        inputs = @browser.all('input')
-        inputs[0].set("\n#{name}\n")
-      end
-      puts "success: #{success}"
-      break if success
-      do_and_rescue { @browser.find('div.search-field').find('a.ui-button').click }
-    end
-    @browser.title.upcase =~ /#{name.upcase}/
-  end
-
+  
+  
+  
   def do_and_rescue()
-    on_enter
     begin
       yield
     rescue Exception => e
@@ -103,21 +174,52 @@ class MorningstarScraper
       success = false
     end
   end
+  
+  
 end
 
-if __FILE__ == $0
 
-  symbol = ARGV[0]
-  if symbol
-    scraper = MorningstarScraper.new
-    if scraper.go_to_fund_page(symbol)
-      if scraper.go_to_portfolio_page
-        style_info = scraper.get_style_data
-        asset_allocation = scraper.get_asset_allocation_data
+
+class EtlMorningStar
+  def initialize(new_only = true)
+    @new_only = new_only
+    @scraper = MorningstarScraper.new
+
+  end
+  def etl_all
+    Ticker.all.each do |ticker|
+      if !@new_only || (@new_only  && ticker.category_tickers.count = 0)
+        etl_ticker(ticker)
       end
     end
   end
-end      
+  def etl_ticker(ticker)
+    info = @scraper.extract(ticker.symbol)
+    translate_load(ticker, info)
+    @scraper.close
+  end
+  def translate_load(ticker, info)
+    pp info
+    
+  end
+
+
+end
+if __FILE__ == $0
+
+  symbol = ARGV[0]
+  ems = EtlMorningStar.new
+  if symbol
+    ticker = Ticker.where(symbol: symbol.upcase).first
+    if ticker
+      ems.etl_ticker(ticker)
+    end
+  else
+    ems.etl_all
+  end
+  
+end
+
 
 
 
