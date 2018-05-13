@@ -9,13 +9,13 @@ module CategorySplit
     end
   end
   
-  def equity_value
+  def stock_value
     category_value(base_type: :equity)
   end
-  def foreign_equity
+  def foreign_stock
     category_value(base_type: :equity, domestic: false)
   end
-  def domestic_equity
+  def domestic_stock
     category_value(base_type: :equity, domestic: true)
   end
   def domestic_reit

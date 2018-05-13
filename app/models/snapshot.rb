@@ -1,6 +1,6 @@
 class Snapshot < ApplicationRecord
-  require_dependency 'category_split'
-  include CategorySplit
+  require_dependency 'amounts'
+  include Amounts
 
   belongs_to :ticker
   belongs_to :account
@@ -9,5 +9,6 @@ class Snapshot < ApplicationRecord
   def value
     shares * price.to_f
   end
+
 
 end

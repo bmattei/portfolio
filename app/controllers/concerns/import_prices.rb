@@ -8,8 +8,9 @@ class ImportPrices
   def self.getLastPrice(symbol)
     symbol = symbol.upcase
     quote_list = self.getDaily(symbol)
-    quote = {}
+    quote = nil
     if !quote_list.empty?
+      quote = {}
       last_date = quote_list.keys.sort{|a, b| a <=> b }.last
       quote[:price]  = quote_list[last_date][:at_close].to_f
       quote[:date] = last_date

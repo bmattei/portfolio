@@ -6,40 +6,16 @@ class Account < ActiveRecord::Base
   belongs_to :account_type
   has_many   :holdings, dependent: :destroy
   accepts_nested_attributes_for :holdings
+
   before_save :update_values_no_save
   after_create :update_values
 
-  def mid_cap(admin_user_id)
-    Account.all.inject(0) {|sum, n| sum +  n.mid_cap }
+  def segment_amount(segment)
+    if !segment.to_s.ends_with?('_amount')
+      segment = segment.to_s + '_amount'
+    end
+    holdings.inject(0) {|sum, n| sum + n.send(segment) }
   end
-  def category_value(cat_selector)
-    holdings.inject(0) { |sum, h| sum + h.category_value(cat_selector) }
-  end
-  def equity_value
-    category_value(base_type: :equity)
-  end
-  def foreign_equity
-    category_value(base_type: :equity, domestic: false)
-  end
-  def domestic_equity
-    category_value(base_type: :equity, domestic: true)
-  end
-  def bond_value
-    category_value(base_type: :bond)
-  end
-  def other_value
-    total_value - ( bond_value + equity_value + cash.to_f)
-  end
-  def large_cap()
-    category_value(base_type: :equity, size: :largeCap)
-  end
-  def small_cap()
-    category_value(base_type: :equity, size: :smallCap)
-  end
-  def mid_cap()
-    category_value(base_type: :equity, size: :midCap)
-  end
-
   def calc_holdings_value
     holdings.inject(0) {|sum, n | sum + n.value }
   end

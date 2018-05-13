@@ -1,3 +1,42 @@
+* ISSUES and Resolutions:
+
+** DGS  Did not have correct market region data.  The was that morning star did not have the data.
+  I modified the code to use the benchmark data if the market data for the stock did not exist.
+			I did not do this for any other group of data Will see if there are issues in the future.
+   FIXED
+** import_fund_data script - was made to load groups which I am phasing out in favor of keeping the
+          data in the ticker table.  When I fixed the DGS issues I modified the code to correctly
+					load stock data I need to do the same for bond data.
+   FIXED
+** I don't have the credit quality data in tickers table. - created and ran migration
+   FIXED
+** I don't have bond cash equivilent in ticker - created and ran migration. Fixed in import_fund_data
+	 FIXED
+
+** Need to update all bond funds now that I fixed above issues.
+
+** Need to import new funds stocks
+
+** Need to Work on Dashboard charts.
+    OK - But do I want to add chart of holdings.
+
+** remove models for categories and groups.
+
+** Fix ticker index and show.
+   OK - I think
+	 
+** Fix create accouht with holdings.
+twofundone
+twofundone
+   Needed to remove the account_id validation from holding.rv <model>
+
+** Update fund info - bad stock sectors
+   fixed I think
+
+** Ticker filters  - more than just symbol
+
+   HAVING TROUBLE WITH STYPE FILTER.
+
 
 * 1/19/2018
 

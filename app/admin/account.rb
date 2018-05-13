@@ -8,6 +8,7 @@ ActiveAdmin.register Account do
         order(total_value: :desc)
     end
     def permitted_params
+      byebug
       params.permit!
     end
   end
@@ -19,189 +20,107 @@ ActiveAdmin.register Account do
   filter :total_value,  filters: [:equals, :greater_than, :less_than]
   
   index do
-    equity_value = accounts.inject(0) { |sum, a| sum + a.equity_value }
-    bond_value = accounts.inject(0) { |sum, a| sum + a.bond_value }
-    other_value = accounts.inject(0) { |sum, a| sum + a.other_value }
-    total_value = accounts.inject(0) { |sum, a| sum + a.total_value }
-    cash_value = accounts.inject(0) { |sum, a| sum + a.cash }
-    split_info = OpenStruct.new(equity: equity_value,
-                                bond: bond_value,
-                                other:other_value,
-                                cash: cash_value,
-                                total: total_value,
-                               )
+    selectable_column
+    column  :owner, sortable: "admin_users.email" do |a|
+      a.admin_user.email
+    end
+    column  :name, sortable: "name" do |account|
+      best_in_place account, :name, as: :input, url: admin_account_path(account)
+    end
+    column  :brokerage, sortable: "brokerage" do |account|
+      best_in_place account, :brokerage, as: :input, url: admin_account_path(account)
+    end
+    column :tax_status, sortable: "account_types.name" do |a|
+      best_in_place a, :account_type_id, as: :select, collection: AccountType.all.map {|i| [i.id, i.name] },  url: admin_account_path(a)
+    end
+    column  "holdings Value", sortable: :holdings_value, class: 'text-right' do |a|
+      number_to_currency(a.holdings_value)
+    end
+    column  :cash, sortable: 'free_cash', class: 'text-right' do |account|
+      best_in_place account, :cash, as: :input, url: admin_account_path(account), display_with: :number_to_currency
+    end
+    column :holdings_cash, :class => 'text-right' do |a|
+      number_to_currency a.segment_amount(:cash)
+    end
+    column :stock, :class => 'text-right' do |a|
+      number_to_currency a.segment_amount(:stock)
+    end
+    column :bond, :class => 'text-right' do |a|
+      number_to_currency a.segment_amount(:bond)
+    end
+    column :other,  :class => 'text-right' do |a|
+      number_to_currency a.segment_amount(:other)
+    end
+    column  "Total Value", sortable: :total_value, class: 'text-right' do |a|
+      number_to_currency(a.total_value)
+    end
+    actions
+
     brokerages = Account.all.collect { |x| x.brokerage}.uniq
 
-    table_for split_info do
-      column :equity , :class => 'text-right' do |i|
-        number_to_currency i.equity
-      end
-      column :equity_perc , :class => 'text-right' do |i|
-        number_to_percentage (i.total > 0 ? (i.equity * 100)/i.total : 0) 
-      end
+    
+    
+    
+  
+    # Accounts totalled by tax type
+    
+    account_type_info = [
+
+      OpenStruct.new(summary: "TaxFree Accounts",
+                     holdings_value: collection.where(account_type_id: AccountType::TaxFree).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
+                     cash: collection.where(account_type_id: AccountType::TaxFree).sum(:cash),
+                     total_value: collection.where(account_type_id: AccountType::TaxFree).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
+      OpenStruct.new(summary: "TaxFree Deferred",
+                     holdings_value: collection.where(account_type_id: AccountType::TaxDeferred).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
+                     cash: collection.where(account_type_id: AccountType::TaxDeferred).sum(:cash),
+                     total_value: collection.where(account_type_id: AccountType::TaxDeferred).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
+      OpenStruct.new(summary: "Taxable",
+                     holdings_value: collection.where(account_type_id: AccountType::Taxable).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
+                     cash: collection.where(account_type_id: AccountType::Taxable).sum(:cash),
+                     total_value: collection.where(account_type_id: AccountType::Taxable).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
+      OpenStruct.new(summary: "All Accounts",
+                     holdings_value: collection.limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
+                     cash: collection.sum(:cash),
+                     total_value: collection.limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
       
-      column :bond , :class => 'text-right' do |i|
-        number_to_currency i.bond
+      
+    ]
+
+    table_for account_type_info do
+      column :summary
+      column :holding_value, :class => 'text-right' do |i|
+        number_to_currency i.holdings_value
       end
-      column :bond_perc , :class => 'text-right' do |i|
-        number_to_percentage (i.total > 0 ? (i.bond * 100)/i.total :  0) 
-      end
-      column :cash , :class => 'text-right' do |i|
+      column :cash, :class => 'text-right' do |i|
         number_to_currency i.cash
       end
-      column :cash_perc , :class => 'text-right' do |i|
-        number_to_percentage (i.total > 0 ? (i.cash * 100)/i.total: 0)
-      end
-      column :other , :class => 'text-right' do |i|
-        number_to_currency i.other
-      end
-      column :other_perc , :class => 'text-right' do |i|
-        number_to_percentage (i.total > 0 ? (i.other * 100)/i.total : 0)
-      end
-      column :total , :class => 'text-right' do |i|
-        number_to_currency i.total
+      column :total_value, :class => 'text-right' do |i|
+        number_to_currency i.total_value
       end
     end
-    
-    
-    
-    # Equity splits
-    equity_splits = OpenStruct.new(
-      domestic: accounts.inject(0) { |sum, a| sum + a.domestic_equity},
-      foreign: accounts.inject(0) { |sum, a| sum + a.foreign_equity},
-      large_cap: accounts.inject(0) { |sum, a| sum + a.large_cap },
-      mid_cap: accounts.inject(0) { |sum, a| sum + a.mid_cap},
-      small_cap: accounts.inject(0) { |sum, a| sum + a.small_cap },
-      equity: equity_value
-    )
-    
-    
-    table_for equity_splits do
-      column :foreign , :class => 'text-right' do |i|
-        number_to_currency i.foreign
-      end
-      column :foreign_percent , :class => 'text-right' do |i|
-        number_to_percentage (i.equity > 0 ? (i.foreign * 100)/i.equity : 0)
-      end
-      column :domestic , :class => 'text-right' do |i|
-          number_to_currency i.domestic
-        end
-        column :domestic_percent , :class => 'text-right' do |i|
-          number_to_percentage (i.equity > 0 ? (i.domestic * 100)/i.equity : 0 )
-        end
-        column :large_cap , :class => 'text-right' do |i|
-          number_to_currency i.large_cap
-        end
-        column :large_percent , :class => 'text-right' do |i|
-          number_to_percentage ( i.equity > 0 ? (i.large_cap * 100)/i.equity : 0)
-        end
-        column :mid_cap , :class => 'text-right' do |i|
-          number_to_currency i.mid_cap
-        end
-        column :mid_percent , :class => 'text-right' do |i|
-          number_to_percentage (i.equity > 0 ? (i.mid_cap * 100)/i.equity : 0)
-        end
-        column :small_cap , :class => 'text-right' do |i|
-          number_to_currency i.small_cap
-        end
-        column :small_percent , :class => 'text-right' do |i|
-          number_to_percentage (i.equity > 0 ? (i.small_cap * 100)/i.equity : 0) 
-        end
-        
-      end
 
-      # Accounts totalled by tax type
-      
-      account_type_info = [
+    # Accounts totalled by brokerage
+    brokerage_info = brokerages.collect do  |b|
+      OpenStruct.new(summary: b,
+                     holdings_value: collection.where(brokerage: b).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
+                     cash: collection.where(brokerage: b).limit(nil).sum(:cash),
+                     total_value: collection.where(brokerage: b).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f })
+    end
 
-        OpenStruct.new(summary: "TaxFree Accounts",
-                       holdings_value: collection.where(account_type_id: AccountType::TaxFree).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
-                       cash: collection.where(account_type_id: AccountType::TaxFree).sum(:cash),
-                       total_value: collection.where(account_type_id: AccountType::TaxFree).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
-        OpenStruct.new(summary: "TaxFree Deferred",
-                       holdings_value: collection.where(account_type_id: AccountType::TaxDeferred).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
-                       cash: collection.where(account_type_id: AccountType::TaxDeferred).sum(:cash),
-                       total_value: collection.where(account_type_id: AccountType::TaxDeferred).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
-        OpenStruct.new(summary: "Taxable",
-                       holdings_value: collection.where(account_type_id: AccountType::Taxable).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
-                       cash: collection.where(account_type_id: AccountType::Taxable).sum(:cash),
-                       total_value: collection.where(account_type_id: AccountType::Taxable).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
-        OpenStruct.new(summary: "All Accounts",
-                       holdings_value: collection.limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
-                       cash: collection.sum(:cash),
-                       total_value: collection.limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
-        
-        
-      ]
-
-      table_for account_type_info do
-        column :summary
-        column :holding_value, :class => 'text-right' do |i|
-          number_to_currency i.holdings_value
-        end
-        column :cash, :class => 'text-right' do |i|
-          number_to_currency i.cash
-        end
-        column :total_value, :class => 'text-right' do |i|
-          number_to_currency i.total_value
-        end
+    table_for brokerage_info do
+      column :summary
+      column :holding_value, :class => 'text-right' do |i|
+        number_to_currency i.holdings_value
       end
-
-      # Accounts totalled by brokerage
-      brokerage_info = brokerages.collect do  |b|
-        OpenStruct.new(summary: b,
-                       holdings_value: collection.where(brokerage: b).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
-                       cash: collection.where(brokerage: b).limit(nil).sum(:cash),
-                       total_value: collection.where(brokerage: b).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f })
+      column :cash, :class => 'text-right' do |i|
+        number_to_currency i.cash
       end
-
-      table_for brokerage_info do
-        column :summary
-        column :holding_value, :class => 'text-right' do |i|
-          number_to_currency i.holdings_value
-        end
-        column :cash, :class => 'text-right' do |i|
-          number_to_currency i.cash
-        end
-        column :total_value, :class => 'text-right' do |i|
-          number_to_currency i.total_value
-        end
+      column :total_value, :class => 'text-right' do |i|
+        number_to_currency i.total_value
       end
+    end
 
 
-      selectable_column
-      column  :owner, sortable: "admin_users.email" do |a|
-        a.admin_user.email
-      end
-      column  :name, sortable: "name" do |account|
-        best_in_place account, :name, as: :input, url: admin_account_path(account)
-      end
-      column  :brokerage, sortable: "brokerage" do |account|
-        best_in_place account, :brokerage, as: :input, url: admin_account_path(account)
-      end
-      column :tax_status, sortable: "account_types.name" do |a|
-        best_in_place a, :account_type_id, as: :select, collection: AccountType.all.map {|i| [i.id, i.name] },  url: admin_account_path(a)
-      end
-      column  "holdings Value", sortable: :holdings_value, class: 'text-right' do |a|
-        number_to_currency(a.holdings_value)
-      end
-      column  :cash, sortable: 'cash', class: 'text-right' do |account|
-        best_in_place account, :cash, as: :input, url: admin_account_path(account), display_with: :number_to_currency
-      end
-      column :equity, :class => 'text-right' do |i|
-        number_to_currency i.equity_value
-      end
-      column :bond, :class => 'text-right' do |i|
-        number_to_currency i.bond_value
-      end
-      column :other,  :class => 'text-right' do |i|
-        number_to_currency i.other_value
-      end
-      column  "Total Value", sortable: :total_value, class: 'text-right' do |a|
-        number_to_currency(a.total_value)
-      end
-      actions
-      
 
   end
   show do |account|

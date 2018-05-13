@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180403003116) do
+ActiveRecord::Schema.define(version: 20180507153644) do
 
   create_table "account_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string "name"
@@ -71,31 +71,6 @@ ActiveRecord::Schema.define(version: 20180403003116) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.integer "admin_user_id"
-  end
-
-  create_table "categories", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string "name"
-    t.integer "base_type"
-    t.integer "size"
-    t.integer "duration"
-    t.boolean "domestic"
-    t.boolean "emerging"
-    t.boolean "reit"
-    t.integer "quality"
-    t.boolean "gov"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "inflation_adjusted"
-    t.integer "growth_value"
-    t.integer "developed_emerging"
-  end
-
-  create_table "category_tickers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer "category_id"
-    t.integer "ticker_id"
-    t.decimal "split", precision: 6, scale: 5
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
   end
 
   create_table "earnings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -184,6 +159,49 @@ ActiveRecord::Schema.define(version: 20180403003116) do
     t.string "description"
     t.string "data_link"
     t.integer "stype"
+    t.string "category"
+    t.decimal "aa_us_stock", precision: 6, scale: 5
+    t.decimal "aa_non_us_stock", precision: 6, scale: 5
+    t.decimal "aa_bond", precision: 6, scale: 5
+    t.decimal "aa_cash", precision: 6, scale: 5
+    t.decimal "aa_other", precision: 6, scale: 5
+    t.decimal "cap_giant", precision: 6, scale: 5
+    t.decimal "cap_large", precision: 6, scale: 5
+    t.decimal "cap_medium", precision: 6, scale: 5
+    t.decimal "cap_small", precision: 6, scale: 5
+    t.decimal "cap_micro", precision: 6, scale: 5
+    t.decimal "bs_government", precision: 6, scale: 5
+    t.decimal "bs_corporate", precision: 6, scale: 5
+    t.decimal "bs_securitized", precision: 6, scale: 5
+    t.decimal "bs_municipal", precision: 6, scale: 5
+    t.decimal "bs_other", precision: 6, scale: 5
+    t.decimal "gov_tips", precision: 6, scale: 5
+    t.decimal "gov_nominal", precision: 6, scale: 5
+    t.decimal "ss_basic_material", precision: 6, scale: 5
+    t.decimal "ss_consumer_cyclical", precision: 6, scale: 5
+    t.decimal "ss_financial_services", precision: 6, scale: 5
+    t.decimal "ss_realestate", precision: 6, scale: 5
+    t.decimal "ss_communications_services", precision: 6, scale: 5
+    t.decimal "ss_energy", precision: 6, scale: 5
+    t.decimal "ss_industrials", precision: 6, scale: 5
+    t.decimal "ss_technology", precision: 6, scale: 5
+    t.decimal "ss_consumer_defensive", precision: 6, scale: 5
+    t.decimal "ss_healthcare", precision: 6, scale: 5
+    t.decimal "ss_utilities", precision: 6, scale: 5
+    t.decimal "mr_americas", precision: 6, scale: 5
+    t.decimal "mr_greater_europe", precision: 6, scale: 5
+    t.decimal "mr_greater_asia", precision: 6, scale: 5
+    t.decimal "mc_developed", precision: 6, scale: 5
+    t.decimal "mc_emerging", precision: 6, scale: 5
+    t.decimal "cq_aaa", precision: 6, scale: 5
+    t.decimal "cq_aa", precision: 6, scale: 5
+    t.decimal "cq_a", precision: 6, scale: 5
+    t.decimal "cq_bbb", precision: 6, scale: 5
+    t.decimal "cq_bb", precision: 6, scale: 5
+    t.decimal "cq_b", precision: 6, scale: 5
+    t.decimal "cq_below_b", precision: 6, scale: 5
+    t.decimal "cq_not_rated", precision: 6, scale: 5
+    t.decimal "bs_cash", precision: 6, scale: 5
   end
 
   create_table "users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

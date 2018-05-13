@@ -1,4 +1,7 @@
 FactoryBot.define do
+  factory :groupings_ticker do
+    
+  end
   factory :admin_user do
     Names = %w(Sally, Sarah, Sam, Tom, Bill, Barbara, Casey, Slim, Joe, Gini, Terry, Alan, Dave, Lisa, Alyssa, Phil, Jane, Mary, Anna, Isa, Karina)
     sequence(:email) do |n|
