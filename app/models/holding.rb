@@ -5,11 +5,17 @@ class Holding < ActiveRecord::Base
   belongs_to :ticker
   has_many :prices, through: :ticker
   delegate :symbol, :description, :maturity, :duration, :expenses, :quality, :group, to: :ticker, prefix: false, allow_nil: true
-  has_many :category_tickers, through: :ticker
-  has_many :categories, through: :category_tickers
   #  validates_presence_of :account_id, :ticker_id
-    validates_presence_of :ticker_id
+  validates_presence_of :ticker_id
+  after_save :update_account
 
+  def update_account
+    account.update_values
+  end
+    
+  def admin_user
+    account.admin_user
+  end
   def cost
     shares * purchase_price + commissions
   end

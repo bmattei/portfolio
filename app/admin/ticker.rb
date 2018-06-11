@@ -13,7 +13,7 @@ ActiveAdmin.register Ticker do
 
   filter :symbol, as: :string
   filter :category
-
+  filter :stype, as: :select, collection: Ticker.stypes.collect {|k,v| [k,v] }
 
                               
   index do
@@ -28,9 +28,12 @@ ActiveAdmin.register Ticker do
     #   end
     # end
     # column :foreign
+    column :stype
+
     column :price , :class => 'text-right' do |t|
       number_to_currency t.last_price
     end
+    
     column :total , :class => 'text-right' do |t|
       number_to_currency t.total
     end

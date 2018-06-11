@@ -1,15 +1,19 @@
 class Ticker < ActiveRecord::Base
 
   has_many :holdings, dependent: :destroy
-  has_many :admin_users, through: :holdings
   has_many :prices
   has_many :accounts, through: :holdings
   validates :symbol, uniqueness: true
+  validates_presence_of :stype
   enum stype: [:mutual_fund, :etf, :stock, :bond]
 
   DateIdx = 0
   PriceIdx = 1
   CloseKey = '4. close'
+
+  def admin_users
+    accounts.collect {|a| a.admin_user }.uniq
+  end
   def self.retrieve_prices
     # All tickers that are associated with at least one holding
     # No sense getting prices for tickers no one owns.

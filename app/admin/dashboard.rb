@@ -137,24 +137,28 @@ ActiveAdmin.register_page "Dashboard" do
           column  name: 'With Free Cash' do
             h3 'With Free Cash'
             render :partial => '/admin/pie_chart',
-                   :locals => {allocation: [
-                                 [:cash, allocation[1].free_cash],
-                                 [:holdings_cash, allocation[1].holdings_cash],
-                                 [:us_stock,  allocation[1].us_stock],
-                                 [:non_us_stock,  allocation[1].non_us_stock],
-                                 [:bond, allocation[1].bond],
-                                 [:other,  allocation[1].other]],
-                               id: 'pie-chart'}
+                   :locals => {
+                     allocation:
+                       [
+                         [:cash, [ allocation[1].free_cash, 0].max ],
+                         [:holdings_cash, [ allocation[1].holdings_cash, 0].max ],
+                         [:us_stock,  [ allocation[1].us_stock, 0 ].max],
+                         [:non_us_stock,  [ allocation[1].non_us_stock, 0].max ],
+                         [:bond, [ allocation[1].bond , 0 ].max ],
+                         [:other,  [ allocation[1].other, 0 ].max ],
+                       ],
+                     id: 'pie-chart'
+                   }
           end
           column  do
             h3 'Without Free Cash'
             render :partial => '/admin/pie_chart',
                    :locals => {allocation: [
-                                 [:holdings_cash, allocation[1].holdings_cash],
-                                 [:us_stock,  allocation[1].us_stock],
-                                 [:non_us_stock,  allocation[1].non_us_stock],
-                                 [:bond, allocation[1].bond],
-                                 [:other,  allocation[1].other]
+                                 [:holdings_cash, [ allocation[1].holdings_cash, 0].max ],
+                                 [:us_stock,  [ allocation[1].us_stock, 0 ].max ],
+                                 [:non_us_stock, [  allocation[1].non_us_stock, 0 ].max ],
+                                 [:bond, [ allocation[1].bond, 0 ].max ],
+                                 [:other,[  allocation[1].other, 0 ].max ]
                                ],
                                id: 'pie-chart'}
           end
@@ -204,9 +208,9 @@ ActiveAdmin.register_page "Dashboard" do
             h3 'Regions'
             render :partial => '/admin/pie_chart',
                    :locals => {allocation: [
-                                 [:americas, allocation[1].americas],
-                                 [:greater_europe,  allocation[1].greater_europe],
-                                 [:greater_asias,  allocation[1].greater_asia],
+                                 [:americas, [ allocation[1].americas, 0].max ],
+                                 [:greater_europe,  [ allocation[1].greater_europe, 0 ].max ],
+                                 [:greater_asias,  [ allocation[1].greater_asia, 0].max ],
                                ],
                                id: 'pie-chart'}
           end
@@ -214,8 +218,8 @@ ActiveAdmin.register_page "Dashboard" do
             h3 'Developed/Emerging'
             render :partial => '/admin/pie_chart',
                    :locals => {allocation: [
-                                 [:developed, allocation[1].developed],
-                                 [:emerging,  allocation[1].emerging],
+                                 [:developed, [ allocation[1].developed, 0].max ],
+                                 [:emerging,  [ allocation[1].emerging, 0].max ],
                                ],
                                id: 'pie-chart'}
           end
@@ -305,17 +309,17 @@ ActiveAdmin.register_page "Dashboard" do
           column do
             render :partial => '/admin/pie_chart',
                    :locals => {allocation: [
-                                 [:basic_material, allocation[1].basic_material],
-                                 [:consumer_cyclical, allocation[1].consumer_cyclical],
-                                 [:financial_services, allocation[1].financial_services],
-                                 [:real_estate,  allocation[1].real_estate],
-                                 [:communication_services,  allocation[1].communication_services],
-                                 [:energy, allocation[1].energy],
-                                 [:industrials,  allocation[1].industrials],
-                                 [:technology,  allocation[1].technology],
-                                 [:consumer_defensive, allocation[1].consumer_defensive],
-                                 [:healthcare,  allocation[1].healthcare],
-                                 [:utilities,  allocation[1].utilities],
+                                 [:basic_material, [allocation[1].basic_material, 0].max],
+                                 [:consumer_cyclical, [ allocation[1].consumer_cyclical, 0].max ],
+                                 [:financial_services, [ allocation[1].financial_services, 0].max ],
+                                 [ :real_estate, [ allocation[1].real_estate.to_f, 0 ].max ],
+                                 [:communication_services,  [allocation[1].communication_services.to_f, 0]],
+                                 [:energy, [allocation[1].energy, 0].max],
+                                 [:industrials,  [allocation[1].industrials, 0].max],
+                                 [:technology,  [allocation[1].technology, 0].max],
+                                 [:consumer_defensive, [allocation[1].consumer_defensive, 0].max],
+                                 [:healthcare,  [allocation[1].healthcare, 0].max],
+                                 [:utilities,  [allocation[1].utilities, 0].max],
                                ],
                                id: 'pie-chart'}
 
@@ -323,170 +327,173 @@ ActiveAdmin.register_page "Dashboard" do
           
         end # columns 
       end # panel
-      panel 'Bond Quality' do
-        table_for allocation do |x|
-          column :cq_aaa , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_aaa, precision: 2)
-            else
-              number_to_currency i.cq_aaa
+      if allocation[0].bond > 0
+        panel 'Bond Quality' do
+          table_for allocation do |x|
+            column :cq_aaa , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_aaa, precision: 2)
+              else
+                number_to_currency i.cq_aaa
+              end
+            end
+            column :cq_aa , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_aa, precision: 2)
+              else
+                number_to_currency i.cq_aa
+              end
+            end
+            column :cq_a , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_a, precision: 2)
+              else
+                number_to_currency i.cq_a
+              end
+            end
+            column :cq_bbb , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_bbb, precision: 2)
+              else
+                number_to_currency i.cq_bbb
+              end
+            end
+            column :cq_bb , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_bb, precision: 2)
+              else
+                number_to_currency i.cq_bb
+              end
+            end
+            column :cq_b , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_b, precision: 2)
+              else
+                number_to_currency i.cq_b
+              end
+            end
+            column :cq_below_b , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_below_b, precision: 2)
+              else
+                number_to_currency i.cq_below_b
+              end
+            end
+            column :cq_not_rated , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.cq_not_rated, precision: 2)
+              else
+                number_to_currency i.cq_not_rated
+              end
+            end
+          end # Table
+          render :partial => '/admin/pie_chart',
+                 :locals => {allocation: [
+                               [:cq_aaa, [allocation[1].cq_aaa, 0].max],
+                               [:cq_aa, [allocation[1].cq_aa, 0].max],
+                               [:cq_a,[ allocation[1].cq_a, 0].max],
+                               [:cq_bbb,  [allocation[1].cq_bbb, 0].max],
+                               [:cq_bb,  [allocation[1].cq_bb, 0].max],
+                               [:cq_b, [ allocation[1].cq_b, 0 ].max ],
+                               [:cq_below_b,  [allocation[1].cq_below_b, 0].max],
+                               [:cq_not_rated,  [allocation[1].cq_not_rated, 0].max],
+                             ],
+                             id: 'pie-chart'}
+        end # panel bond quality
+
+        panel 'Bond Sectors' do
+          table_for allocation do |x|
+            column :government , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.government, precision: 2)
+              else
+                number_to_currency i.government
+              end
+            end
+            column :corporate , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.corporate, precision: 2)
+              else
+                number_to_currency i.corporate
+              end
+            end
+            column :securitized , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.securitized, precision: 2)
+              else
+                number_to_currency i.securitized
+              end
+            end
+            column :municipal , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.municipal, precision: 2)
+              else
+                number_to_currency i.municipal
+              end
+            end
+            column :other , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.bond_other, precision: 2)
+              else
+                number_to_currency i.bond_other
+              end
+            end
+            column :cash_equivilent , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.bond_cash, precision: 2)
+              else
+                number_to_currency i.bond_cash
+              end
+            end
+            column :gov_tips , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.gov_tips, precision: 2)
+              else
+                number_to_currency i.gov_tips
+              end
+            end
+            column :gov_nominal , :class => 'text-right' do |i|
+              if i.display_as == :percent
+                number_to_percentage(i.gov_nominal, precision: 2)
+              else
+                number_to_currency i.gov_nominal
+              end
             end
           end
-          column :cq_aa , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_aa, precision: 2)
-            else
-              number_to_currency i.cq_aa
+          columns do
+            column do
+              h3 "Group all Government Bonds"
+              render :partial => '/admin/pie_chart',
+                     :locals => {allocation: [
+                                   [:government, [allocation[1].government, 0].max],
+                                   [:corporate, [allocation[1].corporate, 0].max],
+                                   [:securitized, [allocation[1].securitized, 0].max],
+                                   [:municipal,  [allocation[1].municipal, 0].max],
+                                   [:other,  [allocation[1].bond_other, 0].max],
+                                   [:cash_equivilent, [allocation[1].bond_cash, 0].max],
+                                 ],
+                                 id: 'pie-chart'}
+            end
+            column do
+              h3 "Split Out Tips and Nominal Government Bonds"
+              render :partial => '/admin/pie_chart',
+                     :locals => {allocation: [
+                                   [:gov_tips,[allocation[1].gov_tips, 0].max],
+                                   [:gov_nominal,[allocation[1].gov_nominal,0].max],
+                                   [:corporate, [allocation[1].corporate,0].max],
+                                   [:securitized, [allocation[1].securitized, 0].max],
+                                   [:municipal,  [allocation[1].municipal, 0].max],
+                                   [:other,  [allocation[1].bond_other, 0].max],
+                                   [:cash_equivilent, [allocation[1].bond_cash, 0].max],
+                                 ],
+                                 id: 'pie-chart'}
+              
             end
           end
-          column :cq_a , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_a, precision: 2)
-            else
-              number_to_currency i.cq_a
-            end
-          end
-          column :cq_bbb , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_bbb, precision: 2)
-            else
-              number_to_currency i.cq_bbb
-            end
-          end
-          column :cq_bb , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_bb, precision: 2)
-            else
-              number_to_currency i.cq_bb
-            end
-          end
-          column :cq_b , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_b, precision: 2)
-            else
-              number_to_currency i.cq_b
-            end
-          end
-          column :cq_below_b , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_below_b, precision: 2)
-            else
-              number_to_currency i.cq_below_b
-            end
-          end
-          column :cq_not_rated , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.cq_not_rated, precision: 2)
-            else
-              number_to_currency i.cq_not_rated
-            end
-          end
-        end # Table
-        render :partial => '/admin/pie_chart',
-               :locals => {allocation: [
-                             [:cq_aaa, allocation[1].cq_aaa],
-                             [:cq_aa, allocation[1].cq_aa],
-                             [:cq_a, allocation[1].cq_a],
-                             [:cq_bbb,  allocation[1].cq_bbb],
-                             [:cq_bb,  allocation[1].cq_bb],
-                             [:cq_b, allocation[1].cq_b],
-                             [:cq_below_b,  allocation[1].cq_below_b],
-                             [:cq_not_rated,  allocation[1].cq_not_rated],
-                           ],
-                           id: 'pie-chart'}
-      end # panel bond quality
-      panel 'Bond Sectors' do
-        table_for allocation do |x|
-          column :government , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.government, precision: 2)
-            else
-              number_to_currency i.government
-            end
-          end
-          column :corporate , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.corporate, precision: 2)
-            else
-              number_to_currency i.corporate
-            end
-          end
-          column :securitized , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.securitized, precision: 2)
-            else
-              number_to_currency i.securitized
-            end
-          end
-          column :municipal , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.municipal, precision: 2)
-            else
-              number_to_currency i.municipal
-            end
-          end
-          column :other , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.bond_other, precision: 2)
-            else
-              number_to_currency i.bond_other
-            end
-          end
-          column :cash_equivilent , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.bond_cash, precision: 2)
-            else
-              number_to_currency i.bond_cash
-            end
-          end
-          column :gov_tips , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.gov_tips, precision: 2)
-            else
-              number_to_currency i.gov_tips
-            end
-          end
-          column :gov_nominal , :class => 'text-right' do |i|
-            if i.display_as == :percent
-              number_to_percentage(i.gov_nominal, precision: 2)
-            else
-              number_to_currency i.gov_nominal
-            end
-          end
-        end
-        columns do
-          column do
-            h3 "Group all Government Bonds"
-            render :partial => '/admin/pie_chart',
-                   :locals => {allocation: [
-                                 [:government, allocation[1].government],
-                                 [:corporate, allocation[1].corporate],
-                                 [:securitized, allocation[1].securitized],
-                                 [:municipal,  allocation[1].municipal],
-                                 [:other,  allocation[1].bond_other],
-                                 [:cash_equivilent, allocation[1].bond_cash],
-                               ],
-                               id: 'pie-chart'}
-          end
-          column do
-            h3 "Split Out Tips and Nominal Government Bonds"
-            render :partial => '/admin/pie_chart',
-                   :locals => {allocation: [
-                                 [:gov_tips,allocation[1].gov_tips],
-                                 [:gov_nominal,allocation[1].gov_nominal],
-                                 [:corporate, allocation[1].corporate],
-                                 [:securitized, allocation[1].securitized],
-                                 [:municipal,  allocation[1].municipal],
-                                 [:other,  allocation[1].bond_other],
-                                 [:cash_equivilent, allocation[1].bond_cash],
-                               ],
-                               id: 'pie-chart'}
-            
-          end
-        end
+          
+        end # panel Bond Sector
+      end
       
-      end # panel Bond Sector
     end
-    
   end
 end

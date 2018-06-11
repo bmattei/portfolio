@@ -13,6 +13,7 @@
 /log/*
 !/log/.keep
 /tmp
+/data
 .bundle
 db/*.sqlite3
 log/*.log
@@ -23,6 +24,7 @@ tmp/*
 doc/api
 doc/app
 *.swp
+*.sql
 *~
 .DS_Store
 Sign up for free

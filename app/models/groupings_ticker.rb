@@ -3,4 +3,4 @@ class GroupingsTicker < ApplicationRecord
   belongs_to  :grouping
   belongs_to  :ticker
   delegate :group, to: :grouping, prefix: false
-end
+Gend

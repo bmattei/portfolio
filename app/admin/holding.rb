@@ -70,13 +70,13 @@ ActiveAdmin.register Holding do
         number_to_percentage(ticker.expenses, precision: 2)
       end
       column :equity, class: 'text-right' do |ticker|
-        number_to_percentage(ticker.equity, precision: 0)
+        number_to_percentage(ticker.equity.to_f * 100, precision: 0)
       end
       column :foreign_equity, class: 'text-right' do |ticker|
-        number_to_percentage(ticker.foreign_equity, precision: 0)
+        number_to_percentage(ticker.foreign_equity.to_f * 100 , precision: 0)
       end
       column :bond, class: 'text-right' do |ticker|
-        number_to_percentage(ticker.bond, precision: 0)
+        number_to_percentage(ticker.bond.to_f * 100, precision: 0)
       end
       column :percent, class: 'text-right' do |ticker|
         number_to_percentage(ticker.percent, precision: 2)

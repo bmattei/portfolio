@@ -24,6 +24,7 @@ end
 Ticker.all.each do |t|
   if t.bs_government && t.gov_tips
     t.gov_nominal = t.bs_government - t.gov_tips
+    t.save
   end
 end
 

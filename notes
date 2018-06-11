@@ -36,6 +36,62 @@ twofundone
 ** Ticker filters  - more than just symbol
 
    HAVING TROUBLE WITH STYPE FILTER.
+   Fixed problem had nothing to do with enums.  I an incorrect relations.  I was trying to do a
+	 belongs_to through which does not work.
+
+***   I changed holdings to add:
+	   def admin_user
+    account.admin_user
+  end
+
+***   I changed ticker to add:
+	 def admin_users
+    accounts.collect {|a| a.admin_user }.uniq
+  end
+
+  FILTER NOW WORKS.
+	  
+FdSantaRosa1!
+
+** I ADDED the S&P 500 to tickers.
+
+** I NEED MORE EXAMPLES WITH STOCKS and a mix of stocks and funds.
+   NEED TO ADD users and accounts with these.  In seeds?
+	 
+** Deploying to Elastic Bean
+MY ENV:
+   ruby 2.3.1
+	 rails -v 5.1.5
+
+Elastic Bean:
+  Linux-based platform configurations run on Amazon Linux 2017.09 (64-bit).
+
+  Single Container Docker 17.12 version 2.10.0 - 64bit Amazon Linux 2018.03 v2.10.0 running Docker 17.12.1-ce
+
+   Docker Version: 17.12.1-ce
+   nginx 1.12.1 - NGINX is open source software for web serving, reverse proxying, caching, load balancing, media streaming, and more.
+
+DOCKER - Just update my version of docker 4/15.
+
+Lots to learn here.  Between Docker and Elastic Bean.  I know elastic bean supports docker and rails in combination.  Not sure if building on mac complicates things,
+but I would think not.  I probably also need to worry about Incrypting my data and getting my data  onto elastic bean.
+
+Do I need to install the EB CLI?  WHat is the EB CLI?
+The EB CLI is a command line interface for Elastic Beanstalk that provides interactive commands that simplify creating, updating and monitoring environments from a local repository. ( from: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/eb-cli3.html)
+
+Installing EB CLI:
+pip install awsebcli --upgrade --user
+
+UPgrade Pip:
+sudo pip install --upgrade pip
+
+(HOPEFULLY SUDO WON'T GET ME IN TROUBLE)
+
+Add /Library/Python/2.7/bin to .bashrc PATH
+
+
+
+
 
 
 * 1/19/2018

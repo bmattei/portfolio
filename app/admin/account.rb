@@ -8,7 +8,6 @@ ActiveAdmin.register Account do
         order(total_value: :desc)
     end
     def permitted_params
-      byebug
       params.permit!
     end
   end
@@ -36,7 +35,7 @@ ActiveAdmin.register Account do
     column  "holdings Value", sortable: :holdings_value, class: 'text-right' do |a|
       number_to_currency(a.holdings_value)
     end
-    column  :cash, sortable: 'free_cash', class: 'text-right' do |account|
+    column  :free_cash, sortable: 'cash', class: 'text-right' do |account|
       best_in_place account, :cash, as: :input, url: admin_account_path(account), display_with: :number_to_currency
     end
     column :holdings_cash, :class => 'text-right' do |a|
@@ -56,7 +55,7 @@ ActiveAdmin.register Account do
     end
     actions
 
-    brokerages = Account.all.collect { |x| x.brokerage}.uniq
+    brokerages = collection.collect { |x| x.brokerage}.uniq
 
     
     

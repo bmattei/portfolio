@@ -57,6 +57,6 @@ Grouping.groups.keys.grep(/^mr/) do |group|
                    description: group.split('_')[1..-1].join(" ")
                   )
 end
-Grouping.create(super_group: :tip_non_tip,
-                 group: :tips,
+Grouping.create(super_group: Grouping.super_groups[:tip_non_tip],
+                 group: Grouping.groups[:tips],
                  description: 'inflation Protected')

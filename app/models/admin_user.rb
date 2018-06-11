@@ -5,7 +5,7 @@ class AdminUser < ActiveRecord::Base
   has_many :holdings, through: :accounts
   has_many :tickers,  through: :holdings
   has_many :captures, dependent: :destroy
-  accepts_nested_attributes_for :holdings, allow_destroy: true
+
   def new_capture
     c = self.captures.create(cash: self.free_cash)
     self.holdings.each do |h|
@@ -40,11 +40,11 @@ class AdminUser < ActiveRecord::Base
                                      shares: t.holdings.sum(:shares).to_f,
                                      price:  t.holdings.first.price.to_f,
                                      value:  total,
-                                     equity: (t.aa_us_stock) + t.aa_non_us_stock * 100,
-                                     foreign_equity: t.aa_non_us_stock * 100,
-                                     bond: t.aa_bond * 100,
+                                     equity: t.aa_us_stock.to_f + t.aa_non_us_stock.to_f * 100,
+                                     foreign_equity: t.aa_non_us_stock.to_f * 100,
+                                     bond: t.aa_bond.to_f * 100,
                                      percent: (total / total_value) * 100,
-                                     fund_cash: t.aa_cash * 100
+                                     fund_cash: t.aa_cash.to_f * 100
                                     )
     end
     total_cash =  accounts.inject(0) {|sum, a| sum + a.cash}
