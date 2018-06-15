@@ -20,9 +20,10 @@ class AccountTest < ActiveSupport::TestCase
   end
 
   test "account has correct holdings value" do
-    account = accounts(:laurtTaxable)
+    account = accounts(:lauraTaxable)
+    account.update_values # Fixture don't trigger callback that does calculations
     holdings_value = account.holdings.inject(0)  {|sum, n| sum + n.value}
-    assert equal holdings_value.to_f, account.holdings_value.to_f
+    assert_equal holdings_value.to_f, account.holdings_value.to_f
   end
 
 end

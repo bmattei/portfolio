@@ -7,8 +7,10 @@ class Account < ActiveRecord::Base
   has_many   :holdings, dependent: :destroy
   accepts_nested_attributes_for :holdings
 
-  before_save :update_values_no_save
-  after_create :update_values
+   
+  after_update :update_values_no_save
+  # before_save :update_values_no_save
+  # after_create :update_values
 
   def segment_amount(segment)
     if !segment.to_s.ends_with?('_amount')
