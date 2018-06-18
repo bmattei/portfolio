@@ -22,7 +22,7 @@ RSpec.describe AdminUser, :type => :model do
   end
 
   it 'cash is 0 if user has no accounts' do
-    expect(@user1.cash).to eq(0)
+    expect(@user1.free_cash).to eq(0)
   end
 
   

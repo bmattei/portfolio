@@ -2,7 +2,7 @@ require "application_system_test_case"
 
 class HoldingsTest < ApplicationSystemTestCase
   include Warden::Test::Helpers
-  LauraPassword = 'laura_pw'
+  UserPassword = 'laura_pw'
   AdminPassword = "admin_pw"
   
   def verify_login(email, password)
@@ -22,7 +22,7 @@ class HoldingsTest < ApplicationSystemTestCase
   test "regular user visiting admin user index " do
     visit admin_users_url
     user = admin_users(:laura)
-    verify_login(user.email, LauraPassword)
+    verify_login(user.email, UserPassword)
     assert_equal "/admin/users", current_path
     title = find_by_id("page_title")
     assert_equal "Users", title.text
@@ -36,7 +36,7 @@ class HoldingsTest < ApplicationSystemTestCase
   test "regular user visiting holdings index" do
     visit admin_holdings_url
     user = admin_users(:laura)
-    verify_login(user.email, LauraPassword) 
+    verify_login(user.email, UserPassword) 
     assert_equal "/admin/holdings", current_path
     title = find_by_id("page_title")
     assert_equal "Holdings", title.text
@@ -53,7 +53,7 @@ class HoldingsTest < ApplicationSystemTestCase
   test "regular user visiting accounts index" do
     visit admin_accounts_url
     user = admin_users(:laura)
-    verify_login(user.email, LauraPassword) 
+    verify_login(user.email, UserPassword) 
     assert_equal "/admin/accounts", current_path
     title = find_by_id("page_title")
     assert_equal "Accounts", title.text
@@ -69,7 +69,7 @@ class HoldingsTest < ApplicationSystemTestCase
   
   test "regulare user visiting root index" do
     visit root_url
-    verify_login(admin_users(:laura).email, LauraPassword)
+    verify_login(admin_users(:laura).email, UserPassword)
     assert_equal "/", current_path
     title = find_by_id("page_title")
     assert_equal "Accounts", title.text
@@ -85,7 +85,7 @@ class HoldingsTest < ApplicationSystemTestCase
   
   test "visiting Prices index" do
     visit admin_prices_url
-    verify_login(admin_users(:laura).email, LauraPassword)
+    verify_login(admin_users(:laura).email, UserPassword)
     assert_equal "/admin/prices", current_path
     title = find_by_id("page_title")
     assert_equal "Prices", title.text
@@ -93,7 +93,7 @@ class HoldingsTest < ApplicationSystemTestCase
 
   test "visiting Tickers index" do
     visit admin_tickers_url
-    verify_login(admin_users(:laura).email, LauraPassword)
+    verify_login(admin_users(:laura).email, UserPassword)
     assert_equal "/admin/tickers", current_path
     title = find_by_id("page_title")
     assert_equal "Tickers", title.text
@@ -109,7 +109,7 @@ class HoldingsTest < ApplicationSystemTestCase
 
   test "visiting dashboard" do
     visit admin_dashboard_url
-    verify_login(admin_users(:laura).email, LauraPassword)
+    verify_login(admin_users(:laura).email, UserPassword)
     assert_equal "/admin/dashboard", current_path
     title = find_by_id("page_title")
     assert_equal "Dashboard", title.text

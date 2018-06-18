@@ -90,8 +90,12 @@ sudo pip install --upgrade pip
 Add /Library/Python/2.7/bin to .bashrc PATH
 
 
+** 6/13 - pushed code to git repository
 
 
+* 6/17
+   Was having problems getting system test to run.  I ended up updating capybara and update rails to 5.2 latest and greatest.
+	 I want to add more tests.
 
 
 * 1/19/2018
