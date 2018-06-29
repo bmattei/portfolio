@@ -8,7 +8,8 @@ class Account < ActiveRecord::Base
   accepts_nested_attributes_for :holdings
 
    
-  after_update :update_values_no_save
+#  after_update :update_values_no_save
+
   # before_save :update_values_no_save
   # after_create :update_values
 
@@ -25,9 +26,7 @@ class Account < ActiveRecord::Base
     self[:cash] || 0
   end
   def total_value
-    if !self[:total_value]
-      update_values
-    end
+    update_values
     self[:total_value]
   end
   def update_values_no_save

@@ -40,10 +40,13 @@ ActiveAdmin.register Holding do
     f.inputs do
       if current_admin_user.admin 
         input :account
+      else
+        input :account, as: :select, collection: current_admin_user.accounts
       end
-      input :ticker, as: :select, collection: Ticker.all.collect {|x| [x.symbol, x.id]}
+      input :ticker, as: :select, collection: Ticker.all.order(:symbol).collect {|x| [x.symbol, x.id]}
       input :shares
       input :purchase_price
+
       input :purchase_date, as: :datepicker
     end
     f.actions

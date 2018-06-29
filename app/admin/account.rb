@@ -11,7 +11,6 @@ ActiveAdmin.register Account do
       params.permit!
     end
   end
-
   filter :admin_user_email, as: :select, label: :owner, collection: proc { AdminUser.all.collect {|x| x.email } }
   filter :name, label: "Account Name"
   filter :brokerage

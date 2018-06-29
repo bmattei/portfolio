@@ -1,5 +1,16 @@
 * ISSUES and Resolutions:
+** BUG
+   total_value not updated when holding is added - or modified?
 
+   LEFT off creating integration test.  I think I need to change code to always
+	 recalculate total value each time total_value is accessed.
+
+   TEST IS NOT COMPLETE but I'm logging in and creating holding.
+	 
+** Accounts page
+*** FILTER: Admin User Email - should only appear if you are an ADMIN user for other users it should not
+            be there.
+						
 ** DGS  Did not have correct market region data.  The was that morning star did not have the data.
   I modified the code to use the benchmark data if the market data for the stock did not exist.
 			I did not do this for any other group of data Will see if there are issues in the future.
