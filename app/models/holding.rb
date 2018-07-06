@@ -7,12 +7,8 @@ class Holding < ActiveRecord::Base
   delegate :symbol, :description, :maturity, :duration, :expenses, :quality, :group, to: :ticker, prefix: false, allow_nil: true
   validates_presence_of :account_id
   validates_presence_of  :ticker_id
+  after_save :delete_if_no_shares
 
-  after_save :update_account
-  def update_account
-    account.touch
-  end
-    
   def admin_user
     account.admin_user
   end
@@ -31,6 +27,10 @@ class Holding < ActiveRecord::Base
       0
     end
   end
+  def price_date
+    self.ticker.last_price_date
+  end
+      
   #
   #  Need to add commissions at some point
   #  For now ignore
@@ -38,4 +38,12 @@ class Holding < ActiveRecord::Base
   def commissions
     0
   end
+
+  private
+  def delete_if_no_shares
+    if self.shares == 0
+      self.destroy
+    end
+  end
+
 end

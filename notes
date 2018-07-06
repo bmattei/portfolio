@@ -1,11 +1,35 @@
 * ISSUES and Resolutions:
-** BUG
-   total_value not updated when holding is added - or modified?
 
-   LEFT off creating integration test.  I think I need to change code to always
-	 recalculate total value each time total_value is accessed.
+** Capture should update prices for users holdings.
 
-   TEST IS NOT COMPLETE but I'm logging in and creating holding.
+   In admin/capture.rb
+	     link_to('capture', capture_admin_captures_path())
+       current_admin_user.new_capture
+			 
+   rake routes
+        capture_admin_captures GET        /admin/captures/capture(.:format)                                                        admin/captures#capture
+
+   LOG: Started GET "/admin/captures/capture" for 127.0.0.1 at 2018-07-02 10:19:37 -0500
+
+   model/admin_user.rb:: new_capture
+
+   admin/price.rb (update_prices)
+	     Ticker.retrieve_prices
+
+MODS: in model/ticker.rb
+      - Create new version of retrieve_prices that takes a list of tickers
+			- Create new routine retrive_all_prices that calls retrive_prices with all tickers that have holdings
+
+      in model/admin_user
+			   modified new_capture to call Ticker.retrieve_prices
+
+      in model/holdings
+			    modified code to destroy after_save if shares were 0.
+					To avoid having to worry about this case.
+					
+** total_value not updated when holding is added - or modified?
+   FIXED
+	 TESTS ADDED - integration/holdings_account.rb
 	 
 ** Accounts page
 *** FILTER: Admin User Email - should only appear if you are an ADMIN user for other users it should not

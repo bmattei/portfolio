@@ -14,10 +14,7 @@ class Ticker < ActiveRecord::Base
   def admin_users
     accounts.collect {|a| a.admin_user }.uniq
   end
-  def self.retrieve_prices
-    # All tickers that are associated with at least one holding
-    # No sense getting prices for tickers no one owns.
-    ticker_list = Ticker.all.find_all {|t| t.holdings.count > 0}.collect {|t| t.symbol}
+  def self.retrieve_prices(ticker_list)
     quote_list = ImportPrices.getQuotes(ticker_list)
     if !quote_list.empty?
       ticker_list.each do |symbol|
@@ -37,6 +34,13 @@ class Ticker < ActiveRecord::Base
         end
       end
     end
+
+  end
+  def self.retrieve_all_prices
+    # All tickers that are associated with at least one holding
+    # No sense getting prices for tickers no one owns.
+    ticker_list = Ticker.all.find_all {|t| t.holdings.count > 0}.collect {|t| t.symbol}
+    self.retrieve_prices(ticker_list)
   end
 
   def name
@@ -66,6 +70,14 @@ class Ticker < ActiveRecord::Base
       price.price
     else
       0
+    end
+  end
+  def last_price_date
+    price = self.prices.order(price_date: :asc).last
+    if price
+      price.updated_at
+    else
+      nil
     end
   end
   def last_price

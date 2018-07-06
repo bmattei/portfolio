@@ -27,15 +27,6 @@ ActiveAdmin.register Holding do
    
   end
 
-  collection_action :snap_shot, :method => :get do
-    Snapshot.capture      
-    redirect_to admin_holdings_path
-  end
-  
-  action_item (:index) do
-    link_to('snap_shot', snap_shot_admin_holdings_path())
-  end
-
   form do |f| 
     f.inputs do
       if current_admin_user.admin 
@@ -72,8 +63,8 @@ ActiveAdmin.register Holding do
       column :expenses, class: 'text-right' do |ticker|
         number_to_percentage(ticker.expenses, precision: 2)
       end
-      column :equity, class: 'text-right' do |ticker|
-        number_to_percentage(ticker.equity.to_f * 100, precision: 0)
+      column :us_equity, class: 'text-right' do |ticker|
+        number_to_percentage(ticker.us_equity.to_f * 100, precision: 0)
       end
       column :foreign_equity, class: 'text-right' do |ticker|
         number_to_percentage(ticker.foreign_equity.to_f * 100 , precision: 0)
@@ -81,6 +72,13 @@ ActiveAdmin.register Holding do
       column :bond, class: 'text-right' do |ticker|
         number_to_percentage(ticker.bond.to_f * 100, precision: 0)
       end
+      column :cash, class: 'text-right' do |ticker|
+        number_to_percentage(ticker.cash.to_f * 100, precision: 0)
+      end
+      column :other, class: 'text-right' do |ticker|
+        number_to_percentage(ticker.other.to_f * 100, precision: 0)
+      end
+
       column :percent, class: 'text-right' do |ticker|
         number_to_percentage(ticker.percent, precision: 2)
       end

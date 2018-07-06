@@ -12,13 +12,11 @@ ActiveAdmin.register Ticker do
   end
 
   filter :symbol, as: :string
-  filter :category
   filter :stype, as: :select, collection: Ticker.stypes.collect {|k,v| [k,v] }
 
                               
   index do
     column :symbol
-    column :category
     
     # column 'size or duration' do |t|
     #   if t.size
@@ -50,7 +48,6 @@ ActiveAdmin.register Ticker do
     attributes_table do
       row :symbol
       row :stype
-      row :category
       if ticker.expenses
         row :expenses do |t|
           number_to_percentage t.expenses 

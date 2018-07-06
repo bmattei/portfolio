@@ -10,6 +10,8 @@ ActiveAdmin.register Capture do
     end
   end
 
+  filter :created_at
+
   collection_action :capture, :method => :get do
     current_admin_user.new_capture      
     redirect_to admin_captures_path
@@ -185,11 +187,13 @@ ActiveAdmin.register Capture do
         end
         
         render :partial => '/admin/pie_chart',
-               :locals => {allocation: [[:cash, dollar_struct.cash],
-                                        [:us_stock,  dollar_struct.us_stock],
-                                        [:non_us_stock,  dollar_struct.non_us_stock],
-                                        [:bond, dollar_struct.bond],
-                                        [:other,  dollar_struct.other]],
+               :locals => {allocation: [
+                             [:cash, dollar_struct.free_cash],
+                             [:us_stock,  dollar_struct.us_stock],
+                             [:non_us_stock,  dollar_struct.non_us_stock],
+                             [:bond, dollar_struct.bond],
+                             [:other,  dollar_struct.other]
+                           ],
                            id: 'pie-chart'}
       end
       

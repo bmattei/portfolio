@@ -26,7 +26,7 @@ ActiveAdmin.register Price do
   #  ACTIONS
   
   collection_action :update_quotes, :method => :get do
-    Ticker.retrieve_prices
+    Ticker.retrieve_all_prices
 #    price_importer = ImportAllPrices.new()
 #    price_importer.import_all
     Account.all.each do |account|
@@ -40,7 +40,6 @@ ActiveAdmin.register Price do
   end
 
 
-  filter :ticker_name, as: :string
   filter :ticker_symbol, as: :string
   filter :price
   filter :price_date
@@ -48,9 +47,6 @@ ActiveAdmin.register Price do
     selectable_column
     column :ticker,  sortable: "tickers.symbol" do |p|
       p.symbol if p.ticker
-    end
-    column :name do |p|
-      p.name if p.ticker
     end
     column :price
     column :price_date

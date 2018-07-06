@@ -11,7 +11,7 @@ ActiveAdmin.register Account do
       params.permit!
     end
   end
-  filter :admin_user_email, as: :select, label: :owner, collection: proc { AdminUser.all.collect {|x| x.email } }
+
   filter :name, label: "Account Name"
   filter :brokerage
   filter :cash
@@ -172,22 +172,6 @@ ActiveAdmin.register Account do
       end
     end
     actions
-  end
-
-  collection_action :update_etrade, method: :get do
-    consumer = OAuth::Consumer.new(CONSUMER_TOKEN[:token],CONSUMER_TOKEN[:secret],{:site => "https://etws.etrade.com", :http_method => :get})
-    request_token = consumer.get_request_token()
-    @url = "https://us.etrade.com/e/t/etws/authorize?key=#{OAuth::Helper.escape(CONSUMER_TOKEN[:token])}&token=#{OAuth::Helper.escape(request_token.token)}"
-
-    
-  end
-  collection_action :do_update_etrade, method: :post do
-    pin  =   params[:notification][:token]
-    access_token = consumer.get_access_token(request_token,{:oauth_verifier => pin})
-
-  end
-  action_item (:index) do
-    link_to('update_etrade', update_etrade_admin_accounts_path())
   end
 
 end

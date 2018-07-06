@@ -1,5 +1,6 @@
 ActiveAdmin.register AdminUser,  as: "User"  do
-  
+  config.filters = false
+
   menu priority: 100, label: "Users"
   permit_params :email, :password, :password_confirmation, :admin
 
@@ -25,11 +26,6 @@ ActiveAdmin.register AdminUser,  as: "User"  do
     column :created_at
     actions
   end
-
-  filter :email
-  filter :current_sign_in_at
-  filter :sign_in_count
-  filter :created_at
 
   form do |f|
     f.inputs "User Details" do
