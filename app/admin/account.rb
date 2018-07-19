@@ -4,8 +4,7 @@ ActiveAdmin.register Account do
   
   controller do
     def scoped_collection
-      super.includes(:admin_user, :account_type).where(admin_user_id: current_admin_user.id).
-        order(total_value: :desc)
+      super.includes(:admin_user, :account_type).order(total_value: :desc)
     end
     def permitted_params
       params.permit!
@@ -19,8 +18,10 @@ ActiveAdmin.register Account do
   
   index do
     selectable_column
-    column  :owner, sortable: "admin_users.email" do |a|
-      a.admin_user.email
+    if current_admin_user.admin?
+      column  :owner, sortable: "admin_users.email" do |a|
+        a.admin_user.email
+      end
     end
     column  :name, sortable: "name" do |account|
       best_in_place account, :name, as: :input, url: admin_account_path(account)

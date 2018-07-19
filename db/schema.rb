@@ -10,9 +10,9 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180507153644) do
+ActiveRecord::Schema.define(version: 2018_05_07_153644) do
 
-  create_table "account_types", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "account_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "description"
     t.integer "tax_category"
@@ -20,7 +20,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "accounts", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "accounts", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "account_number"
     t.string "brokerage"
@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "active_admin_comments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "active_admin_comments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "namespace"
     t.text "body"
     t.integer "resource_id"
@@ -47,7 +47,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.index ["resource_type", "resource_id"], name: "index_active_admin_comments_on_resource_type_and_resource_id"
   end
 
-  create_table "admin_users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "admin_users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
@@ -65,7 +65,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.index ["reset_password_token"], name: "index_admin_users_on_reset_password_token", unique: true
   end
 
-  create_table "captures", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "captures", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.date "capture_date"
     t.decimal "cash", precision: 16, scale: 2
     t.datetime "created_at", null: false
@@ -73,7 +73,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.integer "admin_user_id"
   end
 
-  create_table "earnings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "earnings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "year"
     t.integer "user_id"
     t.decimal "amount", precision: 10
@@ -81,7 +81,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "holdings", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "holdings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "account_id"
     t.integer "ticker_id"
     t.decimal "shares", precision: 16, scale: 4
@@ -91,14 +91,14 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "owners", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "owners", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "owner_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "portfolios", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "portfolios", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "account"
     t.string "brokerage"
@@ -108,7 +108,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "prices", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "prices", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.decimal "price", precision: 16, scale: 4
     t.date "price_date"
     t.integer "ticker_id"
@@ -116,7 +116,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "snapshots", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "snapshots", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "capture_id"
     t.integer "account_id"
     t.integer "ticker_id"
@@ -126,7 +126,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.decimal "price", precision: 16, scale: 4
   end
 
-  create_table "ss_adjustments", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "ss_adjustments", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "start_year"
     t.integer "end_year"
     t.integer "full_retirement_months"
@@ -134,7 +134,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "ss_factors", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "ss_factors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "year"
     t.decimal "max_earnings", precision: 16, scale: 4
     t.decimal "factor", precision: 8, scale: 2
@@ -145,7 +145,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.index ["year"], name: "index_ss_factors_on_year", unique: true
   end
 
-  create_table "tickers", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "tickers", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "symbol", limit: 8
     t.datetime "created_at", null: false
@@ -204,7 +204,7 @@ ActiveRecord::Schema.define(version: 20180507153644) do
     t.decimal "bs_cash", precision: 6, scale: 5
   end
 
-  create_table "users", id: :integer, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "first_name"
     t.string "last_name"
     t.date "date_of_birth"

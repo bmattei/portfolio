@@ -65,6 +65,7 @@ class HoldingsAccountTest < ActionDispatch::IntegrationTest
                  price: price.price + price_change)
     change_in_value = price_change * holding.shares
     expected_total_value = previous_total_value + change_in_value
+    account.reload
     assert_equal expected_total_value.to_f, account.total_value.to_f, "expected value to change by #{change_in_value}"
     
 

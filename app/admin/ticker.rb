@@ -29,12 +29,13 @@ ActiveAdmin.register Ticker do
     column :stype
 
     column :price , :class => 'text-right' do |t|
-      number_to_currency t.last_price
+      (t.last_price ? number_to_currency(t.last_price) : '-')
     end
-    
-    column :total , :class => 'text-right' do |t|
-      number_to_currency t.total
+
+    column :price_date, :class => 'text-right' do |t|
+      t.last_price_date ? t.last_price_date : '-'
     end
+
     column :expenses do |t|
       if t.expenses
         number_to_percentage t.expenses

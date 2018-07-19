@@ -1,4 +1,5 @@
 class Holding < ActiveRecord::Base
+  # in lib
   require_dependency 'amounts'
   include Amounts
   belongs_to :account

@@ -1,6 +1,6 @@
 require 'test_helper'
 
-class CaptureTest < ActionDispatch::IntegrationTest
+class CaptureIntegrationTest < ActionDispatch::IntegrationTest
   def setup
 
   end

@@ -6,13 +6,18 @@ class Account < ActiveRecord::Base
   belongs_to :account_type
   has_many   :holdings, dependent: :destroy
   accepts_nested_attributes_for :holdings
-
+  before_save :update_values_no_save
    
 #  after_update :update_values_no_save
 
   # before_save :update_values_no_save
   # after_create :update_values
 
+  #  Segments are from Morningstar
+  #  Segments:  See lib/amounts.rb for the list of supported
+  #  segments
+  #
+  
   def segment_amount(segment)
     if !segment.to_s.ends_with?('_amount')
       segment = segment.to_s + '_amount'

@@ -34,7 +34,6 @@ class Ticker < ActiveRecord::Base
         end
       end
     end
-
   end
   def self.retrieve_all_prices
     # All tickers that are associated with at least one holding
@@ -47,7 +46,7 @@ class Ticker < ActiveRecord::Base
     symbol
   end
   def retrieve_price
-    quote_info = ImportPrices.getBatch(self.symbol)
+    quote_info = ImportPrices.getBatch([self.symbol])
     if !quote_info.empty?
       quote = quote_info[self.symbol.upcase]
       date = quote[:timestamp].to_date
@@ -65,15 +64,15 @@ class Ticker < ActiveRecord::Base
     holdings.inject(0) { |sum, n | sum + n.shares } 
   end
   def price_on(dt)
-    price = self.prices.where("price_date >= ? and price_date <= ?", dt, dt + 1).order(price_date: :asc).first
+    price = self.prices.where("updated_at >= ? and updated_at <= ?", dt, dt + 1.day).order(price_date: :asc).first
     if price
       price.price
     else
-      0
+      nil
     end
   end
   def last_price_date
-    price = self.prices.order(price_date: :asc).last
+    price = self.prices.order(updated_at: :asc).last
     if price
       price.updated_at
     else
@@ -81,11 +80,11 @@ class Ticker < ActiveRecord::Base
     end
   end
   def last_price
-    price = self.prices.order(price_date: :asc).last
+    price = self.prices.order(updated_at: :asc).last
     if price
       price.price
       else
-      0
+      nil
     end
   end
 
