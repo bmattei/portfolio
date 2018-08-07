@@ -3,11 +3,11 @@ class AdminUser < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable
   has_many :accounts, dependent: :destroy
   has_many :holdings, through: :accounts
-  has_many :tickers,  through: :holdings
+  # has_many :tickers,  through: :holdings
   has_many :captures, dependent: :destroy
 
   def new_capture
-    ticker_list = self.holdings.collect {|h| h.symbol }
+    ticker_list = self.tickers.collect {|h| h.symbol }
     Ticker.retrieve_prices(ticker_list)
     c = self.captures.create(cash: self.free_cash)
     self.holdings.each do |h|
@@ -19,6 +19,9 @@ class AdminUser < ActiveRecord::Base
     c.save
   end
 
+  def tickers
+    self.holdings.collect {|x| x.ticker}.uniq
+  end
   def free_cash
     accounts.inject(0) {|sum, n| sum +  n.cash }
   end

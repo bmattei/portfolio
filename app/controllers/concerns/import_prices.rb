@@ -49,7 +49,7 @@ class ImportPrices
     symbols.each do |s|
       if !quotes[s]
         q = self.getLastPrice(s)
-        if !quotes.empty?
+        if !quotes.empty? && q
           quotes[s] = { price: q[:price],
                         timestamp: q[:date]
                       }

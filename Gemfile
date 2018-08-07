@@ -67,6 +67,7 @@ gem 'nokogiri'
 gem 'chartkick'
 gem 'i18n'
 gem 'cancancan'
+gem 'ransack', github: 'activerecord-hackery/ransack'
 
 group :development, :test do
   gem 'rspec-rails', '~> 3.5'

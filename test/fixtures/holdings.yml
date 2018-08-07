@@ -6,10 +6,10 @@
 #
 
 VNQLaura:
-  account: lauraTaxdeferred
+  account: lauraTaxDeferred
   ticker:  VNQ
   shares:  100
-  purchase_price: 75.50
+  purchase_price: 75.00
 
 VBRLauraTaxable:
   account: lauraTaxable
@@ -29,10 +29,21 @@ TLTLauraTaxable:
   shares:  105
   purchase_price: 58.00
 
+TLTLauraTaxDeferred:
+  account: lauraTaxDeferred
+  ticker:  TLT
+  shares:  400
+  purchase_price: 58.00
+
 EFVLaura:
-  account: lauraTaxfree
+  account: lauraTaxFree
   ticker:  EFV
   shares:  750
   purchase_price: 28.00
 
+VTIPLaura:
+  account: laura401k
+  ticker:  VTIP
+  shares:  1000
+  purchase_price: 45
 

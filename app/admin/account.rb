@@ -60,24 +60,24 @@ ActiveAdmin.register Account do
     
     
     
-  
+    
     # Accounts totalled by tax type
     
     account_type_info = [
 
-      OpenStruct.new(summary: "TaxFree Accounts",
+      OpenStruct.new(account_type: "TaxFree",
                      holdings_value: collection.where(account_type_id: AccountType::TaxFree).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
                      cash: collection.where(account_type_id: AccountType::TaxFree).sum(:cash),
                      total_value: collection.where(account_type_id: AccountType::TaxFree).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
-      OpenStruct.new(summary: "TaxFree Deferred",
+      OpenStruct.new(account_type: "Tax Deferred",
                      holdings_value: collection.where(account_type_id: AccountType::TaxDeferred).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
                      cash: collection.where(account_type_id: AccountType::TaxDeferred).sum(:cash),
                      total_value: collection.where(account_type_id: AccountType::TaxDeferred).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
-      OpenStruct.new(summary: "Taxable",
+      OpenStruct.new(account_type: "Taxable",
                      holdings_value: collection.where(account_type_id: AccountType::Taxable).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
                      cash: collection.where(account_type_id: AccountType::Taxable).sum(:cash),
                      total_value: collection.where(account_type_id: AccountType::Taxable).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
-      OpenStruct.new(summary: "All Accounts",
+      OpenStruct.new(account_type: "All Accounts",
                      holdings_value: collection.limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
                      cash: collection.sum(:cash),
                      total_value: collection.limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f }),
@@ -86,7 +86,7 @@ ActiveAdmin.register Account do
     ]
 
     table_for account_type_info do
-      column :summary
+      column :account_type
       column :holding_value, :class => 'text-right' do |i|
         number_to_currency i.holdings_value
       end
@@ -97,17 +97,17 @@ ActiveAdmin.register Account do
         number_to_currency i.total_value
       end
     end
-
+    
     # Accounts totalled by brokerage
     brokerage_info = brokerages.collect do  |b|
-      OpenStruct.new(summary: b,
+      OpenStruct.new(brokerage: b,
                      holdings_value: collection.where(brokerage: b).limit(nil).inject(0) { |sum, n| sum + n.holdings_value.to_f },
                      cash: collection.where(brokerage: b).limit(nil).sum(:cash),
                      total_value: collection.where(brokerage: b).limit(nil).inject(0) { |sum,n| sum + n.total_value.to_f })
     end
 
-    table_for brokerage_info do
-      column :summary
+    table_for brokerage_info.sort { |a, b| b.total_value <=> a.total_value } do
+      column :brokerage
       column :holding_value, :class => 'text-right' do |i|
         number_to_currency i.holdings_value
       end
@@ -126,24 +126,25 @@ ActiveAdmin.register Account do
     attributes_table do
       row :name
       row :brokerage
-      row "holdings Value", :class => 'text-right' do |a|
+      row "holdings Value" do |a|
         number_to_currency(a.holdings_value)
       end
-      row  "Cash", :class => 'text-right' do |a|
+      row  "Cash"  do |a|
         number_to_currency(a.cash)
       end
-      row  "Total Value", :class => 'text-right' do |a|
+      row  "Total Value" do |a|
         number_to_currency(a.total_value)
       end
     end
     if account.holdings.count > 0
       panel "Holdings" do
         table_for account.holdings do
-          column :name
           column :symbol do |holding|
             link_to holding.symbol, admin_ticker_path(holding.ticker)
           end
-          column :shares
+          column :shares, :class => 'text-right' do |holding| 
+            "%.2f" % holding.shares
+          end
           column :purchase_price, :class => 'text-right' do |holding|
             number_to_currency(holding.purchase_price)
           end

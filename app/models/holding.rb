@@ -6,6 +6,8 @@ class Holding < ActiveRecord::Base
   belongs_to :ticker
   has_many :prices, through: :ticker
   delegate :symbol, :description, :maturity, :duration, :expenses, :quality, :group, to: :ticker, prefix: false, allow_nil: true
+  delegate :brokerage, to: :account, prefix: false
+  delegate :brokerage, :name, to: :account, prefix: true
   validates_presence_of :account_id
   validates_presence_of  :ticker_id
   after_save :delete_if_no_shares

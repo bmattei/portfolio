@@ -8,39 +8,39 @@
 lauraTaxable:
   name: laura taxable
   account_number: 111
-  brokerage: Fidelity taxable
-  account_type: taxable
+  brokerage: Etrade
+  account_type_id: 1
   admin_user: laura
   cash: 1000
 
 lauraTaxDeferred:
   name: laura tax deferred
   account_number: 112
-  brokerage: Etrade Deferred
-  account_type: taxDeferred
+  brokerage: Etrade
+  account_type_id: 2
   admin_user: laura
   cash: 20000
 
 lauraTaxFree:
-  name: laura taxable
+  name: laura tax free
   account_number: 113
-  brokerage: Etrade TaxFree
-  account_type: taxFree
+  brokerage: Fidelity
+  account_type_id: 3
   admin_user: laura
   cash: 20000
 
 laura401k:
-  name: laura taxable
+  name: laura 401k tax deferred
   account_number: 117
-  brokerage: 401K Vangaurd Tax Deferred
-  account_type: taxDeferred
+  brokerage: Vangaurd
+  account_type_id: 2
   admin_user: laura
-  cash: 20000
+  cash: 3000
 
 maryTaxFree:
    name: Mary Taxfree
    account_number: 201
-   brokerage: ETrade
-   account_type: taxFree
+   brokerage: Etrade
+   account_type: 3
    admin_user: mary
    cash: 5000

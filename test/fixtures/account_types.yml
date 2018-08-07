@@ -5,16 +5,19 @@
 # below each fixture, per the syntax in the comments below
 #
 taxable:
+  id: 1
   name: Taxable
   tax_category: 1
   description: Post Tax Savings, but earnings are taxable
 
 taxDeferred:
+  id: 2
   name: TaxDeferred
   tax_category: 2
   description: Pre Tax Savings, will be taxed when withdrawn
 
 taxFree:
+  id: 3
   name: TaxFree
   tax_category: 3
   description: Post Tax Savings, earning are tax free 

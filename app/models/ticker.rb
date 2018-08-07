@@ -14,6 +14,7 @@ class Ticker < ActiveRecord::Base
   def admin_users
     accounts.collect {|a| a.admin_user }.uniq
   end
+
   def self.retrieve_prices(ticker_list)
     quote_list = ImportPrices.getQuotes(ticker_list)
     if !quote_list.empty?

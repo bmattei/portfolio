@@ -6,12 +6,14 @@ class HoldingTest < ActiveSupport::TestCase
      holding.account = Account.first
      assert_not holding.save, "Saved without a Ticker"
    end
-   test "Holding must have account" do
+
+  test "Holding must have account" do
      holding = Holding.new
      holding.ticker = Ticker.first
      assert_not holding.save, "saved without an Account"
    end
-   test "Holding don't save holding with 0 shares" do
+
+  test "Holding don't save holding with 0 shares" do
      account = accounts(:lauraTaxable)
      num_holdings = account.holdings.count
      total_num_holdings = holdings.count
@@ -28,9 +30,13 @@ class HoldingTest < ActiveSupport::TestCase
      assert num_holdings, account.holdings.count
      assert total_num_holdings,Holding.all.count
    end
-     
-     
-                    
+
+  test 'Holdings Value' do
+    holding = holdings(:EFVLaura)
+    value = holding.shares * holding.price
+    assert_equal value.to_f, holding.value
+  end
+
    
    
 end
