@@ -126,23 +126,25 @@ ActiveAdmin.register Holding do
       row :symbol do |holding|
         link_to holding.symbol, admin_ticker_path(holding.ticker)
       end
-      row :shares
-      row :purchase_price
-      row :price
+      row :shares do |holding|
+        '%.2f' % holding.shares
+      end
+      row :purchase_price do |holding|
+        number_to_currency(holding.purchase_price)
+      end
+      row :price do |holding|
+        number_to_currency(holding.price)
+      end
       row :value do |holding|
         number_to_currency(holding.value)
       end
     end
     if holding.prices.count > 0
         panel "Prices" do
-          table_for holdings.prices do
-            column :ticker,  sortable: "tickers.symbol" do |p|
-              p.symbol if p.ticker
+          table_for holdings.prices.order(price_date: :desc)  do
+            column :price do |p|
+              number_to_currency(p.price)
             end
-            column :name do |p|
-              p.name if p.ticker
-            end
-            column :price
             column :price_date
           end
         end

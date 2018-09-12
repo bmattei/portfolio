@@ -138,7 +138,7 @@ ActiveAdmin.register Account do
     end
     if account.holdings.count > 0
       panel "Holdings" do
-        table_for account.holdings do
+        table_for account.holdings.joins(:ticker).order("tickers.symbol asc")  do
           column :symbol do |holding|
             link_to holding.symbol, admin_ticker_path(holding.ticker)
           end

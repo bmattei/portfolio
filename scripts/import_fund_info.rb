@@ -43,6 +43,7 @@ class MorningstarScraper
     on_enter
     info = {}
     info[:header] = read_table_header(t)
+    
     if tbl_info[:prefix_hdr]
       info[:header][:columns].unshift('phdr')
     end
@@ -95,7 +96,12 @@ class MorningstarScraper
     th_list = header.all('th')
     th_list_text = th_list.collect {|th| th.text }
     header_info[:columns] = th_list_text.find_all { |t| t.length > 0 }
+    header_info[:columns].each do |x|
+      x.gsub("\n", "")
+      header_info[:columns].delete(x) if x.blank?
+    end
     header_info
+      
   end
   #
   #(byebug) @browser.has_link?('Bond Style')
@@ -170,6 +176,9 @@ class MorningstarScraper
         tables = @browser.all('table')
         tables.each do |t|
           text = do_and_rescue { t.find('thead').text }
+          # Morningstar seems somewhat inconsistent with it's headers sometime they contain \n between
+          # columns and sometimes spaces.
+          text = text.gsub("\n", ' ').strip
           if text
             tbl_info = TableInfo[text]
             if tbl_info
@@ -219,7 +228,6 @@ class MorningstarScraper
     begin
       yield
     rescue Exception => e
-      byebug
 
       log("RESCUE")
       @browser.save_screenshot "screenshot#{@@screen_number}.png"
@@ -383,7 +391,6 @@ class EtlMorningStar
   end
   def translate_load(ticker, info)
     normalized_info = normalize(info)
-    pp normalized_info
     ticker.category = normalized_info[:category]
     ticker.idx_name = normalized_info[:benchmark]
     load_asset_allocation(ticker, normalized_info[:asset_allocation])

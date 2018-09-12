@@ -19,7 +19,6 @@ class ImportPrices
   end
 
   def self.getDaily(symbol)
-    puts "get daily #{symbol}"
     ticker = symbol.upcase
     
     uri_string = "https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=#{symbol}&apikey=I50S&outputsize=compact"

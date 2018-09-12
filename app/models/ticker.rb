@@ -43,8 +43,8 @@ class Ticker < ActiveRecord::Base
     self.retrieve_prices(ticker_list)
   end
 
-  def name
-    symbol
+  def symbol=(s)
+    write_attribute(:symbol, s.to_s.upcase)
   end
   def retrieve_price
     quote_info = ImportPrices.getBatch([self.symbol])

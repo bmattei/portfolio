@@ -19,16 +19,19 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
                               }
              }
     post '/admin/login', params: params
-    pp response.body
     assert_equal 302, status
     follow_redirect!
     assert_equal 200, status
   end
+  
   test  "Admin Accounts index returns success" do
     get admin_accounts_url
     assert_response :success
 
   end
+
+  # INDEX HEADERS
+
   test "Admin Accounts Index title and headers" do
     get admin_accounts_url
     assert_response :success
@@ -38,6 +41,7 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
       assert_select "th", hdr_str, "Header #{hdr_str} not found"
     end
   end
+
   test "All Users accounts are listed" do
     get admin_accounts_url
     assert_response :success
@@ -66,6 +70,7 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
       end
     end
   end
+  
   test "User account tax status is correct" do
     get admin_accounts_url
     assert_response :success
@@ -226,12 +231,6 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
     end
   end
 
-  test "Verify Accounts free cash" do
-    get admin_accounts_url
-    assert_response :success
-
-
-  end
   test "Admin Accounts show returns success" do
     account = accounts(:lauraTaxable)
     assert account
@@ -239,11 +238,79 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
     assert_response :success
   end
 
+  test "Admin Accounts show, account details table correct headers" do
+    account = accounts(:lauraTaxable)
+    assert account
+    get admin_account_url(account)
+    assert_response :success
+    expected_headers = ["Name", "Brokerage", "Holdings Value", "Cash", "Total Value"]
+    headers = css_select('table > tr > th').collect {|x| x.text}
+    assert_equal expected_headers, headers
+  end
+
+  test "Admin Accounts show, account details table correct data" do
+    account = accounts(:lauraTaxable)
+    assert account
+    get admin_account_url(account)
+    assert_response :success
+    ftr = ActionController::Base.helpers
+    expected_data = [account.name,
+                     account.brokerage,
+                     ftr.number_to_currency(account.holdings_value),
+                     ftr.number_to_currency(account.cash),
+                     ftr.number_to_currency(account.total_value)]
+    data = css_select('table > tr > td').collect {|x| x.text}
+    assert_equal expected_data, data
+  end
+
+  test "Admin Accounts show, account holdings table correct headers" do
+    account = accounts(:lauraTaxable)
+    assert account
+    get admin_account_url(account)
+    assert_response :success
+    expected_headers = ["Symbol", "Shares", "Purchase Price", "Price", "Value"]
+    headers = css_select('table > thead> tr > th').collect {|x| x.text}
+    assert_equal expected_headers, headers
+  end
+
+  test "Admin Accounts show, account holdings table correct data" do
+    account = accounts(:lauraTaxable)
+    assert account
+    get admin_account_url(account)
+    assert_response :success
+    holdings = account.holdings.joins(:ticker).order("tickers.symbol asc")
+    ftr = ActionController::Base.helpers
+    i = 0
+
+    assert_select('table > tbody > tr') do |rows|
+      rows.each do |r|
+        h = holdings[i]
+        i = i + 1
+        expected_data =
+          [
+            h.symbol,
+            "%.2f" % h.shares,
+            ftr.number_to_currency(h.purchase_price),
+            ftr.number_to_currency(h.price),
+            ftr.number_to_currency(h.value)
+          ]
+        data = r.css('td').collect {|x| x.text }
+        assert_equal expected_data, data
+      end
+    end
+  end
+
+
+
+
   test  "User only has access to their own accounts" do
     account = accounts(:maryTaxFree)
     assert account
     assert_raises(Exception) { get admin_account_url(account) }
   end
+
+
+
 
   
 

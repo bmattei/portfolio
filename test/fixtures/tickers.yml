@@ -34,9 +34,28 @@ SCHP:
   quality: AAA 
   idx_name: Bloomberg Barclays U.S. Treasury Inflation Protected Securities (TIPS) Index 
   group: Schwab 
-  description: Intermediate TIPS 
+  description: Intermediate TIPS
+  aa_us_stock: 0
+  aa_non_us_stock: 0
   aa_bond: 1.0
+  aa_cash: 0
+  aa_other: 0
   bs_government: 1.0
+  bs_corporate: 0
+  bs_securitized: 0
+  bs_municipal: 0
+  bs_other: 0
+  bs_cash: 0
+  gov_tips: 0.996
+  gov_nominal: 0.004
+  cq_aaa: 1
+  cq_aa: 0
+  cq_a: 0   
+  cq_bbb: 0
+  cq_bb: 0
+  cq_b: 0
+  cq_below_b: 0
+  cq_not_rated: 0
   
 SCHR:  
   symbol: SCHR 
@@ -61,6 +80,7 @@ TLT:
   description: Long Term Treasury 
   aa_bond: 1.0
   bs_government: 1.0
+  cq_aaa: 1.0
   
 VBR:  
   symbol: VBR 

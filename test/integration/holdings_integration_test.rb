@@ -9,11 +9,81 @@ class HoldingAccountIntegrationTest < ActionDispatch::IntegrationTest
              }
     
     post '/admin/login', params: params
-    pp response.body
     assert_equal 302, status
 
     follow_redirect!
     assert_equal 200, status
+  end
+
+  test "Holding Show Returns Success" do
+    @user.holdings.each do |h|
+      get admin_holding_url(h)
+      assert_response :success
+    end
+  end
+
+  test "Holdings show, details table correct headers" do
+    holding= @user.holdings.first
+    assert holding
+    get admin_holding_url(holding)
+    assert_response :success
+    expected_headers = ["Account", "Name", "Symbol", "Shares", "Purchase Price", "Price", "Value"]
+    headers = css_select('table > tr > th').collect {|x| x.text}
+    assert_equal expected_headers, headers
+  end
+  
+  test "Holdings show, details table correct data" do
+    holding= @user.holdings.first
+    assert holding
+    get admin_holding_url(holding)
+    assert_response :success
+    ftr = ActionController::Base.helpers
+    headers = ["Account", "Name", "Symbol", "Shares", "Purchase Price", "Price", "Value"]
+    expected_data = [holding.account_name,
+                     holding.name || 'empty',
+                     holding.symbol,
+                     "%.2f" % holding.shares,
+                     ftr.number_to_currency(holding.purchase_price),
+                     ftr.number_to_currency(holding.price),
+                     ftr.number_to_currency(holding.value)
+                    ]
+    data = css_select('table > tr > td').collect {|x| x.text}
+    expected_data.each_with_index do |expected, i|
+      assert_equal expected, data[i], "\nHolding #{headers[i]}\n"
+    end
+  end
+
+  test "Holdings show, Price Table headers" do
+    holding= @user.holdings.first
+    assert holding
+    get admin_holding_url(holding)
+    assert_response :success
+    expected_headers = ["Price", "Price Date"]
+    headers = css_select('table > thead> tr > th').collect {|x| x.text}
+    assert_equal expected_headers, headers
+  end
+
+  test "Holdings show, Price Table Data" do
+    holding= holdings(:VWOLauraTaxable)
+    assert holding
+    get admin_holding_url(holding)
+    assert_response :success
+    ftr = ActionController::Base.helpers
+    prices = holding.prices.order(price_date: :desc)
+    i = 0
+    assert_select("table > tbody > tr") do |rows|
+      rows.each do |r|
+        expected_data =
+          [
+            ftr.number_to_currency(prices[i].price),
+            prices[i].price_date.strftime('%B %d, %Y')
+          ]
+        i = i + 1
+        data = r.css('td').collect {|x| x.text }
+        assert_equal expected_data, data
+        
+      end
+    end
   end
 
   test "Holding Page Title" do

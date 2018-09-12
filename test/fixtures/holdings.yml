@@ -17,6 +17,12 @@ VBRLauraTaxable:
   shares:  75
   purchase_price: 48.00
 
+VWOLauraTaxable:
+  account: lauraTaxable
+  ticker:  VWO
+  shares:  175
+  purchase_price: 148.00
+
 SCZLauraTaxable:
   account: lauraTaxable
   ticker:  SCZ

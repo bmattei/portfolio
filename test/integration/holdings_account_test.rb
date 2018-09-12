@@ -8,7 +8,6 @@ class HoldingsAccountTest < ActionDispatch::IntegrationTest
                               }
              }
     post '/admin/login', params: params
-    pp response.body
     assert_equal 302, status
     follow_redirect!
     assert_equal 200, status
@@ -18,7 +17,6 @@ class HoldingsAccountTest < ActionDispatch::IntegrationTest
   def test_add_holding
     account = accounts(:lauraTaxable)
     assert account
-    
     before_total_value = account.total_value
     before_num_holdings = account.holdings.count
 
@@ -43,7 +41,7 @@ class HoldingsAccountTest < ActionDispatch::IntegrationTest
     follow_redirect!
     assert_response :success
     title =  Nokogiri::HTML::Document.parse(response.body).title
-    assert_match "Holding", title, "Title is incorrect we are on the wrong page: #{title}"
+    assert_match "#{ticker.symbol} | Portfolio", title, "Title is incorrect we are on the wrong page: #{title}"
     account.reload
     
     assert_equal (before_num_holdings + 1).to_f, account.holdings.count.to_f, "holdings count not incremented"

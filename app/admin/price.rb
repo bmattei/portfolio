@@ -15,7 +15,7 @@ ActiveAdmin.register Price do
   form do |f| 
     f.inputs do
       input :ticker, as: :select, collection: Ticker.all.collect {|x| [x.symbol, x.id]}
-      input :price
+      input :price 
       input :price_date, as: :datepicker
     end
     f.actions
@@ -44,11 +44,12 @@ ActiveAdmin.register Price do
   filter :price
   filter :price_date
   index do
-    selectable_column
     column :ticker,  sortable: "tickers.symbol" do |p|
       p.symbol if p.ticker
     end
-    column :price
+    column :price, :class => 'text-right' do |p|
+      number_to_currency p.price
+    end
     column :price_date
     actions
   end

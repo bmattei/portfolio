@@ -13,6 +13,7 @@ ActiveAdmin.register Ticker do
 
   filter :symbol, as: :string
   filter :stype, as: :select, collection: Ticker.stypes.collect {|k,v| [k,v] }
+  filter :group, as: :string
                               
   index do
     column :symbol
@@ -26,7 +27,7 @@ ActiveAdmin.register Ticker do
     # end
     # column :foreign
     column :stype
-
+    column :group
     column :price , :class => 'text-right' do |t|
       (t.last_price ? number_to_currency(t.last_price) : '-')
     end
@@ -47,7 +48,10 @@ ActiveAdmin.register Ticker do
   show do |ticker|
     attributes_table do
       row :symbol
-      row :stype
+      row :name
+      row :stype do |t|
+        t.stype ? t.stype : "-"
+      end
       if ticker.expenses
         row :expenses do |t|
           number_to_percentage t.expenses.to_f 
@@ -71,49 +75,34 @@ ActiveAdmin.register Ticker do
           number_to_percentage t.aa_other.to_f * 100, precision: 1
         end
       end
-      if ticker.quality
+      if !ticker.quality.blank?
         row :avg_bond_quality do |t|
           t.quality
         end
-        if ticker.cq_aaa.to_f > 0
-          row :aaa do |t|
-            number_to_percentage t.cq_aaa.to_f * 100, precision: 1
-          end
+        row "AAA" do |t|
+          number_to_percentage t.cq_aaa.to_f * 100, precision: 1
         end
-        if ticker.cq_aa.to_f > 0
-          row :aa do |t|
-            number_to_percentage t.cq_aa.to_f * 100, precision: 1
-          end
+        row "AA" do |t|
+          number_to_percentage t.cq_aa.to_f * 100, precision: 1
         end
-        if ticker.cq_a.to_f > 0
-          row :a do |t|
-            number_to_percentage t.cq_a.to_f * 100, precision: 1
-          end
+        row "A" do |t|
+          number_to_percentage t.cq_a.to_f * 100, precision: 1
         end
-        if ticker.cq_bbb.to_f > 0
-          row :bbb do |t|
-            number_to_percentage t.cq_bbb.to_f * 100, precision: 1
-          end
+        
+        row "BBB" do |t|
+          number_to_percentage t.cq_bbb.to_f * 100, precision: 1
         end
-        if ticker.cq_bb.to_f > 0
-          row :bb do |t|
-            number_to_percentage t.cq_bb.to_f * 100, precision: 1
-          end
+        row "BB" do |t|
+          number_to_percentage t.cq_bb.to_f * 100, precision: 1
         end
-        if ticker.cq_b.to_f > 0
-          row :b do |t|
-            number_to_percentage t.cq_b.to_f * 100, precision: 1
-          end
+        row "B" do |t|
+          number_to_percentage t.cq_b.to_f * 100, precision: 1
         end
-        if ticker.cq_below_b.to_f > 0
-          row :below_b do |t|
-            number_to_percentage t.cq_below_b.to_f * 100, precision: 1
-          end
+        row "Below B" do |t|
+          number_to_percentage t.cq_below_b.to_f * 100, precision: 1
         end
-        if ticker.cq_not_rated.to_f > 0
-          row :not_rated do |t|
-            number_to_percentage t.cq_not_rated.to_f * 100, precision: 1
-          end
+        row "Not Rated" do |t|
+          number_to_percentage t.cq_not_rated.to_f * 100, precision: 1
         end
       end
       if ticker.bs_government.to_f > 0
@@ -146,7 +135,7 @@ ActiveAdmin.register Ticker do
           number_to_percentage t.ss_basic_material.to_f * 100, precision: 1
         end
         row :consumer_cyclical do |t|
-          number_to_percentage t.ss_consumer_cyclical.to_F * 100, precision: 1
+          number_to_percentage t.ss_consumer_cyclical.to_f * 100, precision: 1
         end
         row :financial_services do |t|
           number_to_percentage t.ss_financial_services.to_f * 100, precision: 1

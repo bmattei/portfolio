@@ -37,7 +37,6 @@ class AdminUser < ActiveRecord::Base
 
     tickers.uniq.each do |t|
       total = t.holdings.inject(0) { |sum, n| sum + n.value }.to_f
-      pp "#{t.symbol} #{t.aa_cash.to_f}"
       summary_info << OpenStruct.new(symbol: t.symbol,
                                      description: t.description,
                                      expenses: t.expenses,

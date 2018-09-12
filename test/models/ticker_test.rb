@@ -21,6 +21,7 @@ class TickerTest < ActiveSupport::TestCase
     assert_nil ticker.last_price
     assert_nil ticker.last_price_date
     ticker.retrieve_price
+    assert ticker.last_price, "Price should not be nil"
     assert ticker.last_price > 0
     assert_not_nil ticker.last_price_date
   end
@@ -36,17 +37,22 @@ class TickerTest < ActiveSupport::TestCase
     # Test that held tickers prices were updated
     Holding.all.each do |h|
       assert h.ticker.last_price_date
-      assert h.ticker.last_price_date > date_time
+      # This assert won't work if markets are closed
+      # assert h.ticker.last_price_date > date_time
+
       # All prices in Fixtures are not realistic so
       # new prices should never match
-      # puts "#{h.price} #{old_info[h.symbol]}"
-      assert_not_equal h.ticker.last_price, old_info[h.symbol]
+      assert_not_equal h.ticker.last_price.to_f, old_info[h.symbol].to_f
     end
     # Test that unheld ticker prces were not updated
     held_tickers = Holding.all.each.collect { |x| x.ticker }.uniq
     unheld_tickers = Ticker.all - held_tickers
     unheld_tickers.each do |ticker|
-      assert_equal ticker.last_price, old_info[ticker.symbol]
+      if !old_info[ticker.symbol]
+        assert_nil ticker.last_price
+      else
+        assert_equal  old_info[ticker.symbol], ticker.last_price
+      end
     end
   end
 
