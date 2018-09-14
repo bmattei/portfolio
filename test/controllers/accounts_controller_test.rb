@@ -55,7 +55,7 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     rows = table.css('tr')
     assert_equal account.holdings.count + 1, rows.count
     i = 0
-    account.holdings.each do |h|
+    account.holdings.joins(:ticker).order("tickers.symbol asc").each do |h|
       i = i + 1
       columns = rows[i].css('td')
       assert_equal h.symbol, columns[0].text

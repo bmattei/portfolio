@@ -49,8 +49,11 @@ ActiveAdmin.register Ticker do
     attributes_table do
       row :symbol
       row :name
-      row :stype do |t|
-        t.stype ? t.stype : "-"
+      row :stype
+      if ticker.group
+        row :group do |t|
+          t.group
+        end
       end
       if ticker.expenses
         row :expenses do |t|

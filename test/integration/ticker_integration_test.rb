@@ -25,7 +25,7 @@ class TickerIntegrationTest < ActionDispatch::IntegrationTest
   test "Ticker Index, Table has correct headings" do
     get admin_tickers_url
     assert_response :success
-    expected_headers = ["Stype", "Price", "Price Date", "Expenses"]
+    expected_headers = ["Stype", "Group", "Price", "Price Date", "Expenses"]
     assert_select "thead:nth-child(1)" do |element|
       assert_equal expected_headers, element[0].css('th')[1..-2].collect {|x| x.text}
     end
@@ -39,7 +39,8 @@ class TickerIntegrationTest < ActionDispatch::IntegrationTest
       expected_data = Ticker.all.order("tickers.symbol asc").collect do |t|
         [
           t.symbol,
-          t.stype ? t.stype : "",
+          t.stype.to_s,
+          t.group.to_s,
           t.last_price ? ftr.number_to_currency(t.last_price) : '-',
           t.last_price_date ? t.last_price_date.strftime('%B %d, %Y %H:%M') : '-',
           t.expenses ? ftr.number_to_percentage(t.expenses) : ""
@@ -60,10 +61,15 @@ class TickerIntegrationTest < ActionDispatch::IntegrationTest
       get admin_ticker_url(ticker)
       assert_response :success
 
-      expected_headers = ["Symbol", "Stype"]
+      expected_headers = ["Symbol", "Name", "Stype"]
+
+      if ticker.group
+        expected_headers << "Group"
+      end
       if ticker.expenses
         expected_headers << "Expenses"
       end
+
       if ticker.aa_us_stock
         expected_headers = expected_headers + ["Us Stock", "Non Us Stock", "Bond", "Cash", "Other"]
       end
@@ -100,7 +106,10 @@ class TickerIntegrationTest < ActionDispatch::IntegrationTest
     get admin_ticker_url(ticker)
     assert_response :success
     ftr = ActionController::Base.helpers
-    expected_data = [ticker.symbol, ticker.stype ? ticker.stype : '-']
+    expected_data = [ticker.symbol, ticker.name, ticker.stype]
+    if ticker.group
+      expected_data << ticker.group
+    end
     if ticker.expenses
       expected_data << ftr.number_to_percentage(ticker.expenses.to_f)
     end
@@ -170,7 +179,11 @@ class TickerIntegrationTest < ActionDispatch::IntegrationTest
     headers = css_select('table > tr > th').collect {|x| x.text}
     data = css_select('table > tr > td').collect {|x| x.text}
     headers.each_with_index do |h,i|
-      assert_equal expected_data[i], data[i], "#{h} not correct"
+      if expected_data[i]
+        assert_equal expected_data[i], data[i], "#{h} not correct"
+      else
+        assert_match /empty/i, data[i], "\n*** #{h} not correct ***\n"
+      end
     end
   end
 

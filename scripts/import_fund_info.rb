@@ -27,6 +27,18 @@ class MorningstarScraper
     @browser = Capybara.current_session
   end
 
+  def go_to_expenses(symbol)
+    on_enter
+    url_str =  "http://financials.morningstar.com/etfund/operations.html?t=#{symbol}"
+    puts url_str
+    begin
+      @browser.visit(url_str)
+    rescue
+      @browser.visit(url_str)
+    end
+    puts @browser.title
+    @browser.title =~ /#{symbol.upcase}.*Operations\sOverview/
+  end
   def go_to_portfolio_page(symbol)
     on_enter
     url_str =  "http://portfolios.morningstar.com/fund/summary?t=#{symbol}"
@@ -38,7 +50,12 @@ class MorningstarScraper
     end
     @browser.title =~ /Report.*#{symbol.upcase}/
   end
-  
+
+  def read_expenses(t)
+    go_to_fees_and_expense(t)
+    
+  end
+    
   def read_table(t, tbl_info)
     on_enter
     info = {}
@@ -155,14 +172,21 @@ class MorningstarScraper
     result = @browser.find("a.banchmarkName").text 
   end
 
+  def get_expenses
+    text = @browser.find("#feesandExpense").find_all('tr')[0].find_all('td')[0].text
+    text.gsub(/%/, '').to_f
+  end
+    
   def extract(symbol)
     on_enter
+    symbol_info = {}
+    if go_to_expenses(symbol)
+      symbol_info[:expenses] = get_expenses
+    end
     if go_to_portfolio_page(symbol)
-      symbol_info = {
-        category: get_category,
-        benchmark: get_benchmark
-        
-      }
+      symbol_info[:category] =    get_category
+      symbol_info[:benchmark] =  get_benchmark
+
       [:stock, :bond].each do | btype |
         if btype == :bond
           if @browser.has_link?('Bond Style')
@@ -390,9 +414,11 @@ class EtlMorningStar
     end
   end
   def translate_load(ticker, info)
+    byebug
     normalized_info = normalize(info)
     ticker.category = normalized_info[:category]
     ticker.idx_name = normalized_info[:benchmark]
+    ticker.expenses = 
     load_asset_allocation(ticker, normalized_info[:asset_allocation])
     load_market_cap(ticker, normalized_info[:market_cap])
     load_sector_weight(ticker, normalized_info[:sector_weight])

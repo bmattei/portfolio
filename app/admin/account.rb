@@ -162,6 +162,8 @@ ActiveAdmin.register Account do
   end
   form do |f|
     f.inputs do
+      f.semantic_errors *f.object.errors.keys
+
       f.input :admin_user, as: :select, collection: AdminUser.all.map {|u| [u.email, u.id] }
       f.input :name
       f.input :account_number

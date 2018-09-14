@@ -1,16 +1,26 @@
 require 'test_helper'
 
 class HoldingTest < ActiveSupport::TestCase
+  # We have a validates uniqueness of ticker_id - so this will not throw an error but will not save
   test "Holding must have ticker" do
      holding = Holding.new
      holding.account = Account.first
+     before_count = Holding.all.count
      assert_not holding.save, "Saved without a Ticker"
+     after_count = Holding.all.count
+     assert_equal before_count, after_count,  "Holding should not have been added"
    end
 
+  # We had to remove the validate_uniqueness so adding nested holding while adding an
+  # account worked - but we require the account_id in the DB so this will raise and error
+  #
   test "Holding must have account" do
      holding = Holding.new
      holding.ticker = Ticker.first
-     assert_not holding.save, "saved without an Account"
+     before_count = Holding.all.count
+     assert_raises(ActiveRecord::StatementInvalid) {holding.save}
+     after_count = Holding.all.count
+     assert_equal before_count, after_count,  "Holding should not have been added"
    end
 
   test "Holding don't save holding with 0 shares" do

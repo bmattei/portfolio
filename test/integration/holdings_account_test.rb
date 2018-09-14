@@ -30,9 +30,10 @@ class HoldingsAccountTest < ActionDispatch::IntegrationTest
     num_shares = 100
     purchase_price = 78.89
     create_msg = { 'holding' =>  {'account_id' => account.id.to_s,
-                              'ticker_id' => ticker.id.to_s,
-                              'purchase_price' => purchase_price.to_s,
-                              'shares' =>  num_shares.to_s,
+                                  'ticker_id' => ticker.id.to_s,
+                                  # 'ticker_id' => "7010",
+                               'purchase_price' => purchase_price.to_s,
+                               'shares' =>  num_shares.to_s,
                               'purchase_date' => Date.today.to_s
                              }
                  }
@@ -40,8 +41,10 @@ class HoldingsAccountTest < ActionDispatch::IntegrationTest
     assert_response :redirect
     follow_redirect!
     assert_response :success
+    account.reload
+    account.holdings.each {|x| p "#{x.symbol} #{x.shares}" }
     title =  Nokogiri::HTML::Document.parse(response.body).title
-    assert_match "#{ticker.symbol} | Portfolio", title, "Title is incorrect we are on the wrong page: #{title}"
+    assert_equal "Holding was successfully created.", flash.notice
     account.reload
     
     assert_equal (before_num_holdings + 1).to_f, account.holdings.count.to_f, "holdings count not incremented"

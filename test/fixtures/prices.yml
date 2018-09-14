@@ -142,3 +142,9 @@ LTVPX_1:
   price:  1.60
   updated_at:   <%= DateTime.now.to_s %>
   price_date:   <%= DateTime.now.to_s %>
+
+AFL_1:
+  ticker: AFL
+  price:  411.60
+  updated_at:   <%= DateTime.now.to_s %>
+  price_date:   <%= DateTime.now.to_s %>

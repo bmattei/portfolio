@@ -14,10 +14,22 @@ Capybara.configure do |config|
   config.default_max_wait_time = 10 # seconds
   config.default_driver = :selenium
 end
-browser = Capybara.current_session
-byebug
-driver = browser.driver.browser
+def load_table(table)
+  rows = table.find_all('tr')
+  rows[1..-1].each do |row|
+    columns = row.find_all('td')
+    byebug
+  end
 
-browser.visit('https://www.fidelity.com/mutual-funds/fidelity-funds/overview')
-byebug
+end
+session = Capybara.current_session
+driver = session.driver
+browser = driver.browser
+driver.visit('https://markets.businessinsider.com/funds/mutual-funds/finder')
+session.find_field("investmentcompany").select("Fidelity Management & Research Company")
+search = session.find_all('.search')[0]
+search.click
+table = session.find_all('table')[0]
+load_table(table)
+
 driver.quit

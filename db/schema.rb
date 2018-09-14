@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_05_07_153644) do
+ActiveRecord::Schema.define(version: 2018_09_14_125015) do
 
   create_table "account_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
@@ -82,13 +82,14 @@ ActiveRecord::Schema.define(version: 2018_05_07_153644) do
   end
 
   create_table "holdings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
-    t.integer "account_id"
-    t.integer "ticker_id"
+    t.integer "account_id", null: false
+    t.integer "ticker_id", null: false
     t.decimal "shares", precision: 16, scale: 4
     t.date "purchase_date"
     t.decimal "purchase_price", precision: 16, scale: 4
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["ticker_id", "account_id"], name: "index_holdings_on_ticker_id_and_account_id", unique: true
   end
 
   create_table "owners", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

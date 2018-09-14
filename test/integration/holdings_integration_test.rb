@@ -49,7 +49,11 @@ class HoldingAccountIntegrationTest < ActionDispatch::IntegrationTest
                     ]
     data = css_select('table > tr > td').collect {|x| x.text}
     expected_data.each_with_index do |expected, i|
-      assert_equal expected, data[i], "\nHolding #{headers[i]}\n"
+      if expected_data[i].eql?("empty")
+        assert_match /empty/i, data[i]
+      else
+        assert_equal expected, data[i], "\nHolding #{headers[i]}\n"
+      end
     end
   end
 
