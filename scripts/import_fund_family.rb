@@ -39,7 +39,10 @@ def load_table(table, fund_family)
 end
 
 groups = {"Fidelity" => "Fidelity Management & Research Company",
-          "Franklin" => "Franklin Templeton Investment Mgmt" }
+          "Franklin" => "Franklin Templeton Investment Mgmt",
+          "Janus" => "Janus Capital Management LLC",
+          "Pimco" => "PIMCO"
+         }
 fund_family = ARGV[0]
 if groups[fund_family]
   family_full_name = groups[fund_family]

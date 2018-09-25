@@ -26,6 +26,7 @@ ActiveAdmin.register Account do
     column  :name, sortable: "name" do |account|
       best_in_place account, :name, as: :input, url: admin_account_path(account)
     end
+    column :account_number
     column  :brokerage, sortable: "brokerage" do |account|
       best_in_place account, :brokerage, as: :input, url: admin_account_path(account)
     end
@@ -126,6 +127,7 @@ ActiveAdmin.register Account do
     attributes_table do
       row :name
       row :brokerage
+      row :account_type
       row "holdings Value" do |a|
         number_to_currency(a.holdings_value)
       end
@@ -168,6 +170,7 @@ ActiveAdmin.register Account do
       f.input :name
       f.input :account_number
       f.input :brokerage
+      f.input :account_type
       f.input :cash
       f.has_many :holdings do |holding|
         holding.input :ticker, as: :select, collection: Ticker.all.order(:symbol).map {|t| [t.symbol, t.id] }

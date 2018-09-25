@@ -1,4 +1,4 @@
-class Holding < ActiveRecord::Base
+class Holding < ApplicationRecord
   # in lib
   require_dependency 'amounts'
   include Amounts
@@ -11,7 +11,7 @@ class Holding < ActiveRecord::Base
   # Problem in add acocunt with holdings if account_id is validated.
   # validates_presence_of :account_id
   validates_presence_of  :ticker_id
-  after_save :delete_if_no_shares
+  after_save :after_save
 
   def admin_user
     account.admin_user
@@ -44,9 +44,11 @@ class Holding < ActiveRecord::Base
   end
 
   private
-  def delete_if_no_shares
+  def after_save
     if self.shares == 0
       self.destroy
+    elsif !self.price
+      self.ticker.retrieve_price
     end
   end
 

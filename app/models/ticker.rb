@@ -1,4 +1,4 @@
-class Ticker < ActiveRecord::Base
+class Ticker < ApplicationRecord
 
   has_many :holdings, dependent: :destroy
   has_many :prices
@@ -39,7 +39,7 @@ class Ticker < ActiveRecord::Base
   def self.retrieve_all_prices
     # All tickers that are associated with at least one holding
     # No sense getting prices for tickers no one owns.
-    ticker_list = Ticker.all.find_all {|t| t.holdings.count > 0}.collect {|t| t.symbol}
+    ticker_list = Holding.all.collect {|h| h.symbol}.uniq
     self.retrieve_prices(ticker_list)
   end
 
@@ -47,7 +47,7 @@ class Ticker < ActiveRecord::Base
     write_attribute(:symbol, s.to_s.upcase)
   end
   def retrieve_price
-    quote_info = ImportPrices.getBatch([self.symbol])
+    quote_info = ImportPrices.getQuotes([self.symbol])
     if !quote_info.empty?
       quote = quote_info[self.symbol.upcase]
       date = quote[:timestamp].to_date

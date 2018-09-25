@@ -1,4 +1,4 @@
-class AdminUser < ActiveRecord::Base
+class AdminUser < ApplicationRecord
   devise :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable
   has_many :accounts, dependent: :destroy
@@ -35,20 +35,22 @@ class AdminUser < ActiveRecord::Base
     summary_info = []
     total_value = total_value()
 
+
     tickers.uniq.each do |t|
-      total = t.holdings.inject(0) { |sum, n| sum + n.value }.to_f
+      ticker_holdings = holdings.where(ticker_id: t.id)
+      total = ticker_holdings.inject(0) { |sum, n| sum + n.value }.to_f
       summary_info << OpenStruct.new(symbol: t.symbol,
                                      description: t.description,
-                                     expenses: t.expenses,
-                                     shares: t.holdings.sum(:shares).to_f,
-                                     price:  t.holdings.first.price.to_f,
-                                     value:  total,
+                                     expenses: t.expenses.to_f,
+                                     shares: ticker_holdings.sum(:shares).to_f,
+                                     price:  ticker_holdings.first.price.to_f,
+                                     value:  total.to_f,
                                      us_equity: t.aa_us_stock.to_f,
                                      foreign_equity: t.aa_non_us_stock.to_f,
                                      bond: t.aa_bond.to_f,
                                      other: t.aa_other.to_f,
                                      cash: t.aa_cash.to_f,
-                                     percent: (total / total_value),
+                                     percent: (total / total_value).to_f
                                     )
     end
     total_cash =  accounts.inject(0) {|sum, a| sum + a.cash}

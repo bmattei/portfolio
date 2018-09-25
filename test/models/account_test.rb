@@ -7,14 +7,14 @@ class AccountTest < ActiveSupport::TestCase
     total_value = account.holdings.inject(0)  {|sum, n| sum + n.value}  + account.cash
     assert_equal total_value.to_f, account.total_value.to_f, "Total value calculated correctly"
   end
-    
+  
   test "account total_value get updated correct when holding is added" do
     account = accounts(:lauraTaxable)
     ticker = Ticker.where(symbol: :AFL).first
     total_value_before = account.holdings.inject(0)  {|sum, n| sum + n.value}  + account.cash
     num_shares = 111
     account.holdings.create(ticker_id: ticker.id, shares: num_shares,
-                           purchase_price: ticker.last_price)
+                            purchase_price: ticker.last_price)
     total_value_now = total_value_before + num_shares * ticker.last_price
     assert_equal total_value_now.to_f, account.total_value.to_f
   end

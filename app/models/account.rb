@@ -1,4 +1,4 @@
-class Account < ActiveRecord::Base
+class Account < ApplicationRecord
   Etrade = "etrade"
   Fidelity = "Fidelity"
   

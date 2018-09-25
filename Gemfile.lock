@@ -301,7 +301,7 @@ DEPENDENCIES
   nokogiri
   oauth
   puma
-  rails (= 5.2)
+  rails (~> 5.2.0)
   ransack!
   rspec-rails (~> 3.5)
   sass-rails (~> 5.0)

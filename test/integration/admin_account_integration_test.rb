@@ -2,15 +2,17 @@ require 'test_helper'
 
 class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
 
-  BROKERAGE_IDX = 2
-  TAX_STATUS_IDX = 3
-  HOLDINGS_VALUE_IDX = 4
-  FREE_CASH_IDX = 5
-  HOLDING_CASH_IDX = 6
-  STOCK_IDX = 7
-  BOND_IDX = 8
-  OTHER_IDX = 9
-  TOTAL_IDX = 10
+  NAME_IDX = 1
+  ACCOUNT_NUMBER_IDX = 2
+  BROKERAGE_IDX = 3
+  TAX_STATUS_IDX = 4
+  HOLDINGS_VALUE_IDX = 5
+  FREE_CASH_IDX = 6
+  HOLDING_CASH_IDX = 7
+  STOCK_IDX = 8
+  BOND_IDX = 9
+  OTHER_IDX = 10
+  TOTAL_IDX = 11
 
   def setup
     @user = admin_users(:laura)
@@ -36,7 +38,7 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
     get admin_accounts_url
     assert_response :success
     assert_select "h2", "Accounts", "Title Accounts not found"
-    ["Name", "Brokerage", "Tax Status", "Free Cash", "Holdings Cash", "Stock", "Bond", "Other",
+    ["Name", "Account Number", "Brokerage", "Tax Status", "Free Cash", "Holdings Cash", "Stock", "Bond", "Other",
      "Total Value"].each do |hdr_str|
       assert_select "th", hdr_str, "Header #{hdr_str} not found"
     end
@@ -55,6 +57,7 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
   end
 
   test "User account brokerage is correct" do
+    
     get admin_accounts_url
     assert_response :success
     accounts = @user.accounts.order(total_value: :desc)
@@ -243,7 +246,7 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
     assert account
     get admin_account_url(account)
     assert_response :success
-    expected_headers = ["Name", "Brokerage", "Holdings Value", "Cash", "Total Value"]
+    expected_headers = ["Name", "Brokerage", "Account Type", "Holdings Value", "Cash", "Total Value"]
     headers = css_select('table > tr > th').collect {|x| x.text}
     assert_equal expected_headers, headers
   end
@@ -256,6 +259,7 @@ class AdminAccountIntegrationTest < ActionDispatch::IntegrationTest
     ftr = ActionController::Base.helpers
     expected_data = [account.name,
                      account.brokerage,
+                     account.account_type.name,
                      ftr.number_to_currency(account.holdings_value),
                      ftr.number_to_currency(account.cash),
                      ftr.number_to_currency(account.total_value)]

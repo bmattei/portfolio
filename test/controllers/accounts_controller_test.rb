@@ -23,6 +23,12 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     assert_response :success
     assert_select "table", 2
   end
+  NAME_ROW_NUM = 0
+  BROKERAGE_ROW_NUM = 1
+  ACCOUNT_TYPE_ROW_NUM = 2
+  HOLDINGS_VALUE_ROW_NUM = 3
+  CASH_ROW_NUM = 4
+  TOTAL_VALUE_ROW_NUM = 5
   test "First table has correct data" do
     account = accounts(:lauraTaxable)
     account.update_values
@@ -31,14 +37,15 @@ class AccountsControllerTest < ActionDispatch::IntegrationTest
     tables = css_select('table')
     assert_equal 2, tables.count
     headings = tables[0].css('th').collect {|x| x.text}
-    expected_headings = ["Name", "Brokerage", "Holdings Value", "Cash", "Total Value"]
+    expected_headings = ["Name", "Brokerage", "Account Type", "Holdings Value", "Cash", "Total Value"]
     assert_equal expected_headings, headings
     rows = tables[0].css('tr')
-    assert_equal account.name, rows[0].css('td').text
-    assert_equal account.brokerage, rows[1].css('td').text
-    assert_equal account.holdings_value.to_f, rows[2].css('td').text.gsub(/[\$,]/,'').to_f
-    assert_equal account.cash.to_f, rows[3].css('td').text.gsub(/[\$,]/,'').to_f
-    assert_equal account.total_value.to_f, rows[4].css('td').text.gsub(/[\$,]/,'').to_f
+    assert_equal account.name, rows[NAME_ROW_NUM].css('td').text
+    assert_equal account.brokerage, rows[BROKERAGE_ROW_NUM].css('td').text
+    assert_equal account.account_type.name, rows[ACCOUNT_TYPE_ROW_NUM].css('td').text
+    assert_equal account.holdings_value.to_f, rows[HOLDINGS_VALUE_ROW_NUM].css('td').text.gsub(/[\$,]/,'').to_f
+    assert_equal account.cash.to_f, rows[CASH_ROW_NUM].css('td').text.gsub(/[\$,]/,'').to_f
+    assert_equal account.total_value.to_f, rows[TOTAL_VALUE_ROW_NUM].css('td').text.gsub(/[\$,]/,'').to_f
   end
   
   test "Holdings Table has correct data" do

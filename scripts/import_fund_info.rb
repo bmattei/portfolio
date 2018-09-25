@@ -414,11 +414,10 @@ class EtlMorningStar
     end
   end
   def translate_load(ticker, info)
-    byebug
     normalized_info = normalize(info)
     ticker.category = normalized_info[:category]
     ticker.idx_name = normalized_info[:benchmark]
-    ticker.expenses = 
+    ticker.expenses = normalized_info[:expense]
     load_asset_allocation(ticker, normalized_info[:asset_allocation])
     load_market_cap(ticker, normalized_info[:market_cap])
     load_sector_weight(ticker, normalized_info[:sector_weight])

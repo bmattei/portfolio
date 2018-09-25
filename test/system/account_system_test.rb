@@ -167,7 +167,7 @@ class AccountSystemTest < ApplicationSystemTestCase
   # Cash Filter
 
   # //*[@id="best_in_place_account_5_cash"]
-  CASH_COL = 5
+  CASH_COL = 6
   # Can't get this test to run.  Dropdown selection is getting reset to "Equals" not sure why
   # test "Cash Greater Then" do
   #   visit new_admin_user_session_url
@@ -210,13 +210,13 @@ class AccountSystemTest < ApplicationSystemTestCase
       (1...rows.count).each do |idx|
         cash_str = rows[idx].all('td')[CASH_COL].text
         cash_amount = cash_str.gsub(/[\$,]/,'').to_f
-        assert_equal cash_amount, amount, "Should no be displaying an account with #{cash_amount}"
+        assert_equal cash_amount, amount, "Should not be displaying an account with #{cash_amount}"
       end
     end
   
   end
 
-  TOTAL_VALUE_COL = 10
+  TOTAL_VALUE_COL = 11
   test "Total Value Equals than" do
     visit new_admin_user_session_url
     user = admin_users(:laura)
