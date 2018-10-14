@@ -1,7 +1,52 @@
+9/28
+
+
+
 * ISSUES and Resolutions:
 
-** Capture should update prices for users holdings.
+** Add simplecov and get coverage number
+** I need to add more funds to the database.
+    I don't have all the funds and stocks and I need to add more.  Currently I was trying to add
+		Karina's data and I didn't have some of the funds.  Worse I don't remember what combination of
+		scripts I used to import funds.  Missing funds I need for Karina:
+		vwenx - vanguard wellington admiral
+		pttdx - Pimco total Return D
+		fcntx - fidelity contrafund
+		 - Missing all fidelity funds.
 
+     What scripts import funds and fund data?
+		 
+		 import_vanguard_funds.rb - imports vanguard funds but vwenx is not on page - I think because it is closed.
+		 import_fund_info.rb - imports the morningstar info about the fund.
+		 
+     I created the vwenx ticker using the application. Now need to import the data about the fund.
+
+     DONE
+		 
+** Change to insure ticker.symbol is always correct
+ def symbol=(s)
+    write_attribute(:symbol, s.to_s.upcase)
+  end
+
+**change to correctly check if bond info should be shown for a ticker in Admin show:
+      if !ticker.quality.blank?
+			
+** REMOVING filters
+   I had some filters that didn't make sense that I'm removing.
+*** Filter by user_email only makes sense for the ADMIN user but I couldn't figure out how to
+    restrict it to admin users.
+
+*** I removed all filter on "user" page as users see only on user on that page
+
+*** I removed category from the Ticker page as I only have category date for a small number of FUNDs NO  STOCKS 
+    I MAY WANT TO revisit this and see if I can get stock category data and for the rest of the funds
+
+** PRICES REmove ticker name - because I just have the symbol in the name field
+** DASHBOARD - Should be able to select charts.
+
+** Capture should update prices for users holdings.
+   FIXED
+	 
    In admin/capture.rb
 	     link_to('capture', capture_admin_captures_path())
        current_admin_user.new_capture
@@ -26,7 +71,11 @@ MODS: in model/ticker.rb
       in model/holdings
 			    modified code to destroy after_save if shares were 0.
 					To avoid having to worry about this case.
-					
+
+
+june 14th
+june 26th cheveron
+
 ** total_value not updated when holding is added - or modified?
    FIXED
 	 TESTS ADDED - integration/holdings_account.rb

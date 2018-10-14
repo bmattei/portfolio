@@ -71,6 +71,15 @@ ActiveAdmin.register Ticker do
         row :bond do |t|
           number_to_percentage t.aa_bond.to_f * 100, precision: 1
         end
+        row :government do |t|
+          number_to_percentage t.bs_government.to_f * 100, precision: 1
+        end
+        row :gov_nominal do |t|
+          number_to_percentage t.gov_nominal.to_f * 100, precision: 1
+        end
+        row :gov_nominal do |t|
+          number_to_percentage t.gov_tips.to_f * 100, precision: 1
+        end
         row :cash do |t|
           number_to_percentage t.aa_cash.to_f * 100, precision: 1
         end

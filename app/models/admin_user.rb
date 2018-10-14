@@ -2,6 +2,7 @@ class AdminUser < ApplicationRecord
   devise :database_authenticatable, 
          :recoverable, :rememberable, :trackable, :validatable
   has_many :accounts, dependent: :destroy
+  has_many :earnings
   has_many :holdings, through: :accounts
   # has_many :tickers,  through: :holdings
   has_many :captures, dependent: :destroy

@@ -1,24 +1,15 @@
 ActiveAdmin.register Earning do
-# See permitted parameters documentation:
-# https://github.com/activeadmin/activeadmin/blob/master/docs/2-resource-customization.md#setting-up-strong-parameters
-#
-# permit_params :list, :of, :attributes, :on, :model
-#
-# or
-#
-# permit_params do
-#   permitted = [:permitted, :attributes]
-#   permitted << :other if params[:action] == 'create' && current_user.admin?
-#   permitted
-# end
+  scope_to :current_admin_user, unless: proc { current_admin_user.admin? }
   controller do
+    def scoped_collection
+      super.includes(:admin_user)
+    end
     def permitted_params
       params.permit!
     end
   end
-
   index do
-    column :user
+    column :admin_user
     column :year
     column :ss_earnings do |x|
       number_to_currency(x.amount)
@@ -29,5 +20,15 @@ ActiveAdmin.register Earning do
     column :ss_tax_current do |x|
       number_to_currency(x.ss_tax_current)
     end
+    actions
+  end
+  form do |f|
+    f.inputs do
+      f.semantic_errors *f.object.errors.keys
+      f.input :year
+      f.input :amount
+    end
+    actions
   end
 end
+

@@ -6,6 +6,8 @@ class Ability
       can :manage, :all
       can :read, ActiveAdmin::Page, name: "Dashboard", namespace_name: "admin"
     else
+      can :read, SsFactor
+      can :manage, Earning, admin_user_id: user.id
       can [:read, :update], AdminUser, id: user.id
       can :manage, Account, admin_user_id: user.id
       can :manage, Ticker

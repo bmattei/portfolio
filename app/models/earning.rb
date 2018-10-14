@@ -1,5 +1,5 @@
 class Earning < ApplicationRecord
-  belongs_to :user
+  belongs_to :admin_user
   def adjusted_earnings
     ss = SsFactor.where(year: self.year).first 
     amount = self.amount > ss.max_earnings ? ss.max_earnings : (self.amount || 0)

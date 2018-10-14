@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_14_125015) do
+ActiveRecord::Schema.define(version: 2018_10_13_151215) do
 
   create_table "account_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 2018_09_14_125015) do
 
   create_table "earnings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "year"
-    t.integer "user_id"
+    t.integer "admin_user_id"
     t.decimal "amount", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -138,7 +138,7 @@ ActiveRecord::Schema.define(version: 2018_09_14_125015) do
   create_table "ss_factors", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "year"
     t.decimal "max_earnings", precision: 16, scale: 4
-    t.decimal "factor", precision: 8, scale: 2
+    t.decimal "factor", precision: 15, scale: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.decimal "ss_tax_rate", precision: 7, scale: 4
