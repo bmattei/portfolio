@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_10_13_151215) do
+ActiveRecord::Schema.define(version: 2018_11_09_171650) do
 
   create_table "account_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
@@ -75,7 +75,7 @@ ActiveRecord::Schema.define(version: 2018_10_13_151215) do
 
   create_table "earnings", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.integer "year"
-    t.integer "admin_user_id"
+    t.integer "user_id"
     t.decimal "amount", precision: 10
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -211,6 +211,7 @@ ActiveRecord::Schema.define(version: 2018_10_13_151215) do
     t.date "date_of_birth"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.integer "admin_user_id"
     t.index ["first_name", "last_name", "date_of_birth"], name: "index_users_on_first_name_and_last_name_and_date_of_birth", unique: true
   end
 

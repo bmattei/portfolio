@@ -30,6 +30,7 @@ factor_table = parent_table.find('table')
 rows = factor_table.find_all('tr')
 rows[1..-1].each do |r|
   (year, value) = r.text.split
+  puts "Years: #{year}"
   factor = SsFactor.find_or_create_by(year: year)
   factor.factor = value
   factor.save

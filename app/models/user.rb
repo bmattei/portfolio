@@ -1,5 +1,6 @@
 # coding: utf-8
 class User < ApplicationRecord
+  belongs_to :admin_user
   has_many :earnings
   # Step 1: Enter your earnings in Column B, but not more than the
   # amount shown in Column A. If you have no earnings, enter “0.”
@@ -30,43 +31,62 @@ class User < ApplicationRecord
     self.first_name + " " + self.last_name
   end
   def ss_contribution
-    self.earnings.inject(0) {|sum, x|  sum + (2 * x.ss_tax_current) }
+    byebug
+    if self.earnings.count > 0
+      self.earnings.inject(0) {|sum, x|  sum + (2 * x.ss_tax_current) }
+    end
   end
   def top_35
-    earnings.collect {|x| x.adjusted_earnings}.sort {|a,b| b <=>a}.slice(0..34)
+    if self.earnings.count > 0
+      earnings.collect {|x| x.adjusted_earnings}.sort {|a,b| b <=>a}.slice(0..34)
+    end
   end
   def sum_top_35
-    top_35.inject(0) { |sum, n| sum + n }
+    if self.earnings.count > 0
+      top_35.inject(0) { |sum, n| sum + n }
+    end
   end
   def avg_monthly
-    (sum_top_35/420).floor
+    if self.earnings.count > 0
+      (sum_top_35/420).floor
+    end
   end
   def ss_at_full_retirement
-    avg  = avg_monthly
-    factor_90 = [885, avg].min
-    factor_32 = [[avg_monthly, 5336].min - 885, 0].max
-    factor_15 = [avg_monthly - 5336, 0].max
-    factor_90 * 0.9 + factor_32 * 0.32 + factor_15 * 0.15
+    if self.earnings.count > 0
+      avg  = avg_monthly
+      factor_90 = [885, avg].min
+      factor_32 = [[avg_monthly, 5336].min - 885, 0].max
+      factor_15 = [avg_monthly - 5336, 0].max
+      factor_90 * 0.9 + factor_32 * 0.32 + factor_15 * 0.15
+    end
   end
   def birth_year
     date_of_birth.year
   end
   def full_ss_age
-    (full_retirement_months/12).to_s + " yrs  " + (full_retirement_months.modulo(12)).to_s + " mons "
+    if self.earnings.count > 0
+      (full_retirement_months/12).to_s + " yrs  " + (full_retirement_months.modulo(12)).to_s + " mons "
+    end
   end
   def full_retirement_months
-   SsAdjustment.where('start_year <= ? and end_year >= ?',  birth_year, birth_year).first.full_retirement_months
+    if self.earnings.count > 0
+      SsAdjustment.where('start_year <= ? and end_year >= ?',  birth_year, birth_year).first.full_retirement_months
+    end
   end 
   def ss_at_70
-    num_months = (12 * 70) - full_retirement_months
-    full_retirement = ss_at_full_retirement
-    full_retirement * (1 + num_months * SsAdjustment::MONTHLY_INCREASE)
+    if self.earnings.count > 0
+      num_months = (12 * 70) - full_retirement_months
+      full_retirement = ss_at_full_retirement
+      full_retirement * (1 + num_months * SsAdjustment::MONTHLY_INCREASE)
+    end
   end
   def ss_at_62
-    num_months = full_retirement_months - (62 * 12)
-    total_adjustment = SsAdjustment::MONTHLY_DECREASE_FIRST_36 * 36 + SsAdjustment::MONTHLY_DECREASE_OVER_36 * (num_months - 36)
-    full_retirement = ss_at_full_retirement
-    full_retirement * (1 - total_adjustment)
+    if self.earnings.count > 0
+      num_months = full_retirement_months - (62 * 12)
+      total_adjustment = SsAdjustment::MONTHLY_DECREASE_FIRST_36 * 36 + SsAdjustment::MONTHLY_DECREASE_OVER_36 * (num_months - 36)
+      full_retirement = ss_at_full_retirement
+      full_retirement * (1 - total_adjustment)
+    end
   end
   
-  end
+end
