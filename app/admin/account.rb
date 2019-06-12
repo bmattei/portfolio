@@ -157,7 +157,107 @@ ActiveAdmin.register Account do
             number_to_currency(holding.value)
           end
         end
-        
+      end
+      if account.total_value > 0
+                  total = account.total_value.to_f
+          dollar_struct = OpenStruct.new(
+            display_as: :dollar,
+            us_stock: account.segment_amount(:us_stock).to_f,
+            non_us_stock: account.segment_amount(:non_us_stock).to_f,
+            bond: account.segment_amount(:bond).to_f,
+            free_cash: account.cash.to_f,
+            holdings_cash: account.segment_amount(:cash).to_f,
+            other: account.segment_amount(:other).to_f,
+            total: total.to_f
+          )
+          percent_struct = OpenStruct.new(
+            display_as: :percent,
+            us_stock: (dollar_struct.us_stock.to_f/total).to_f * 100,
+            non_us_stock: (dollar_struct.non_us_stock.to_f/total).to_f * 100,
+            bond: (dollar_struct.bond.to_f/total).to_f * 100,
+            free_cash: (dollar_struct.cash.to_f/total).to_f * 100,
+            holdings_cash: (dollar_struct.holdings_cash.to_f/total).to_f * 100,
+            other: (dollar_struct.other.to_f/total).to_f * 100,
+            total: 100
+          )
+          
+          allocation = [
+            dollar_struct,
+            percent_struct
+          ]
+          
+          
+
+          panel "Allocation" do
+            table_for allocation do |x|
+              column :us_stock , :class => 'text-right' do |i|
+                if i.display_as == :percent
+                  number_to_percentage(i.us_stock, precision: 2)
+                else
+                  number_to_currency i.us_stock
+                end
+              end
+              column :non_us_stock , :class => 'text-right' do |i|
+                if i.display_as == :percent
+                  number_to_percentage(i.non_us_stock, precision: 2)
+                else
+                  number_to_currency i.non_us_stock
+                end
+              end
+              column :bond , :class => 'text-right' do |i|
+                if i.display_as == :percent
+                  number_to_percentage(i.bond, precision: 2)
+                else
+                  number_to_currency i.bond
+                end
+              end
+              column :other , :class => 'text-right' do |i|
+                if i.display_as == :percent
+                  number_to_percentage(i.other, precision: 2)
+                else
+                  number_to_currency i.other
+                end
+              end
+              column :holdings_cash , :class => 'text-right' do |i|
+                if i.display_as == :percent
+                  number_to_percentage(i.holdings_cash, precision: 2)
+                else
+                  number_to_currency i.holdings_cash
+                end
+              end
+              column :free_cash , :class => 'text-right' do |i|
+                if i.display_as == :percent
+                  number_to_percentage(i.free_cash, precision: 2)
+                else
+                  number_to_currency i.free_cash
+                end
+              end
+              column :total , :class => 'text-right' do |i|
+                if i.display_as == :percent
+                  number_to_percentage(i.total, precision: 2)
+                else
+                  number_to_currency i.total
+                end
+              end
+            end
+          end
+          columns do
+            column do
+                          render :partial => '/admin/pie_chart',
+                   :locals => {
+                     allocation:
+                       [
+                         [:cash, [ allocation[1].free_cash, 0].max ],
+                         [:holdings_cash, [ allocation[1].holdings_cash, 0].max ],
+                         [:us_stock,  [ allocation[1].us_stock, 0 ].max],
+                         [:non_us_stock,  [ allocation[1].non_us_stock, 0].max ],
+                         [:bond, [ allocation[1].bond , 0 ].max ],
+                         [:other,  [ allocation[1].other, 0 ].max ],
+                       ],
+                     id: 'pie-chart'
+                   }
+            end
+          end
       end
     end
     
@@ -180,5 +280,6 @@ ActiveAdmin.register Account do
     end
     actions
   end
+
 
 end

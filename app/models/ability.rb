@@ -17,7 +17,7 @@ class Ability
       can [:read, :write, :update, :destroy], Holding, :account => {admin_user_id: admin_user.id}
       can :manage, Earning, :user => {admin_user_id: admin_user.id}
       can [:create], Holding
-
+      can :manage, User, admin_user_id: admin_user.id
     end
 
   end

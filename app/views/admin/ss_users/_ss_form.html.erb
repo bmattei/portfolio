@@ -1,0 +1,7 @@
+<%= form_tag(calculate_ss_admin_ss_user_path, method: "post") do |f| %>
+Age In Years 
+<%= select_tag :age_in_years, options_for_select(62..70)%>
+Age In Months
+<%= select_tag :age_in_months, options_for_select(0..11)%>
+<%= submit_tag("calculate_ss") %>
+<% end %>
