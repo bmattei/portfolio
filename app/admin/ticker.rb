@@ -77,7 +77,7 @@ ActiveAdmin.register Ticker do
         row :gov_nominal do |t|
           number_to_percentage t.gov_nominal.to_f * 100, precision: 1
         end
-        row :gov_nominal do |t|
+        row :gov_tips do |t|
           number_to_percentage t.gov_tips.to_f * 100, precision: 1
         end
         row :cash do |t|

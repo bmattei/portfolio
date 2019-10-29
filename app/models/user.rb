@@ -93,20 +93,36 @@ class User < ApplicationRecord
   def ss_at_age(years, months = 0)
     monthly_ss = nil
     age_in_months = 12 * years + months
-    if age_in_months <= (70 * 12) && age_in_months >= (62 * 12) 
-      monthly_ss =
-        case 
-        when age_in_months < full_retirement_months
-          ss_age_less_than_full(age_in_months)
-        when age_in_months == full_retirement_months
-          ss_at_full_retirment
-        when age_in_months > full_retirement_months
-          ss_age_greater_than_full(age_in_months)
-        end
+    if self.earnings.count > 0
+      if age_in_months <= (70 * 12) && age_in_months >= (62 * 12) 
+        monthly_ss =
+          case 
+          when age_in_months < full_retirement_months
+            ss_age_less_than_full(age_in_months)
+          when age_in_months == full_retirement_months
+            ss_at_full_retirement
+          when age_in_months > full_retirement_months
+            ss_age_greater_than_full(age_in_months)
+          end
+      end
     end
     monthly_ss
   end
 
+  def import_earnings(file)
+    success = true
+    byebug
+    if !File.exists?(file)
+      success = false
+    end
+    doc = Nokogiri::XML(File.open(file))
+    doc.xpath("//osss:Earnings").each do | x|
+      self.earnings.create(year: x.attributes["startYear"].value.to_i,
+                           amount: x.children[1].children[0].text.to_i)
+    end
+    return success
+  end
+  
   private
   def ss_age_less_than_full(age_in_months)
     num_months = full_retirement_months - age_in_months
@@ -121,6 +137,7 @@ class User < ApplicationRecord
     full_retirement = ss_at_full_retirement
     full_retirement * (1 + num_months * SsAdjustment::MONTHLY_INCREASE)
   end
+
 
 end
 

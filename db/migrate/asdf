@@ -1,7 +1,0 @@
-- Earnings to point to adminuser instead of user
-- delete concerns/import_accounts
-- change models/ability to show Earnings and SsFactors
-- Change AdminUser to have many earnings
-- delete lib/category_split
-- Create Import_ss_factors
-- add simplecov to test/test_helper.rb 

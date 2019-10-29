@@ -89,6 +89,10 @@ class Ticker < ApplicationRecord
     end
   end
 
+  def group
+    self[:group] || "NA"
+
+  end
 
   
 end

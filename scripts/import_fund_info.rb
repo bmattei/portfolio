@@ -131,7 +131,7 @@ class MorningstarScraper
 
   
   TableInfo = {
-    'Type % Net % Short % Long Bench- mark Cat Avg' => {name: :asset_allocation,
+    'Type % Net % Short % Lobng Bench- mark Cat Avg' => {name: :asset_allocation,
                                                         row_header: true,
                                                         td_count:  5},
 
@@ -173,15 +173,58 @@ class MorningstarScraper
   end
 
   def get_expenses
-    text = @browser.find("#feesandExpense").find_all('tr')[0].find_all('td')[0].text
+    table = @browser.find("#feesandExpense")
+    row = table.find_all('tr')[0]
+    column = row.find_all('td')[0]
+    text = column.text
     text.gsub(/%/, '').to_f
   end
-    
+  def go_to_expenses(symbol)
+    on_enter
+    url_str =  "http://financials.morningstar.com/etfund/operations.html?t=#{symbol}"
+    puts url_str
+    begin
+      @browser.visit(url_str)
+    rescue
+      @browser.visit(url_str)
+    end
+    puts @browser.title
+    @browser.title =~ /#{symbol.upcase}.*Operations\sOverview/
+  end
+
+  def get_expenses_from_quote_page
+    div = @browser.find("li >  div", text: "Expense Ratio")
+    text = div.text
+    expense = text.split[2].gsub(/%/, '').to_f
+  end
+  def go_to_quote(symbol)
+
+    success = false
+    ['funds', 'etfs'].each do |type|
+      url_str =  "https://www.morningstar.com/#{type}/xnas/#{symbol}/quote"
+      puts url_str
+      begin
+        result = @browser.visit(url_str)
+        if @browser.title =~ /#{symbol.upcase}/
+          success = true
+          break
+        end
+      rescue
+        next
+      end
+    end
+    puts @browser.title
+    return success
+  end
   def extract(symbol)
     on_enter
     symbol_info = {}
     if go_to_expenses(symbol)
       symbol_info[:expenses] = get_expenses
+    else
+      if go_to_quote(symbol)
+        symbol_info[:expenses] = get_expenses_from_quote_page
+      end
     end
     if go_to_portfolio_page(symbol)
       symbol_info[:category] =    get_category
@@ -280,6 +323,7 @@ class EtlMorningStar
 
   def etl_ticker(ticker)
     info = @scraper.extract(ticker.symbol)
+    pp info
     translate_load(ticker, info)
   end
 
@@ -417,13 +461,14 @@ class EtlMorningStar
     normalized_info = normalize(info)
     ticker.category = normalized_info[:category]
     ticker.idx_name = normalized_info[:benchmark]
-    ticker.expenses = normalized_info[:expense]
+    ticker.expenses = normalized_info[:expenses]
     load_asset_allocation(ticker, normalized_info[:asset_allocation])
     load_market_cap(ticker, normalized_info[:market_cap])
     load_sector_weight(ticker, normalized_info[:sector_weight])
     load_market_classification(ticker, normalized_info[:market_classification])
     load_bond_data(ticker, normalized_info[:bond_data])
     load_credit_quality(ticker, normalized_info[:credit_quality])
+    byebug
     load_fixed_income_sectors(ticker, normalized_info[:fixed_income_sectors])
     ticker.save
   end
@@ -432,9 +477,9 @@ class EtlMorningStar
   end
 end
 
+puts "\n\n*************file #{File.expand_path(__FILE__)} 0: #{File.expand_path($0)}**********\n\n"
 
-if __FILE__ == $0
-
+if File.expand_path(__FILE__) == File.expand_path($0)
 
   ems = EtlMorningStar.new
   if ARGV.count > 0

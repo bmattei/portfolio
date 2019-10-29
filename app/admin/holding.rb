@@ -113,9 +113,9 @@ ActiveAdmin.register Holding do
         number_to_percentage(holding.other.to_f * 100, precision: 0)
       end
       
-        column "% of Portfolio", class: 'text-right' do |holding|
-          number_to_percentage(holding.percent * 100, precision: 2)
-        end
+      column "% of Portfolio", class: 'text-right' do |holding|
+        number_to_percentage(holding.percent * 100, precision: 2)
+      end
     end
   end
 
@@ -138,17 +138,162 @@ ActiveAdmin.register Holding do
       row :value do |holding|
         number_to_currency(holding.value)
       end
-    end
-    if holding.prices.count > 0
-        panel "Prices" do
-          table_for holdings.prices.order(price_date: :desc)  do
-            column :price do |p|
-              number_to_currency(p.price)
-            end
-            column :price_date
-          end
+      if holding.group
+        row :group do |holding|
+          holding.group
+        end
+      end
+      if holding.expenses
+        row :expenses do |holding|
+          number_to_percentage holding.expenses.to_f 
+        end
+      end
+      if holding.aa_us_stock
+        row :us_stock do |h|
+          number_to_percentage h.aa_us_stock.to_f * 100, precision: 1
+        end 
+        row :non_us_stock do |h|
+          number_to_percentage h.aa_non_us_stock.to_f * 100, precision: 1
+        end
+        row :bond do |h|
+          number_to_percentage h.aa_bond.to_f * 100, precision: 1
+        end
+        row :government do |h|
+          number_to_percentage h.bs_government.to_f * 100, precision: 1
+        end
+        row :gov_nominal do |h|
+          number_to_percentage h.gov_nominal.to_f * 100, precision: 1
+        end
+        row :gov_tips do |h|
+          number_to_percentage h.gov_tips.to_f * 100, precision: 1
+        end
+        row :cash do |h|
+          number_to_percentage h.aa_cash.to_f * 100, precision: 1
+        end
+        row :other do |h|
+          number_to_percentage h.aa_other.to_f * 100, precision: 1
+        end
+      end
+      if !holding.quality.blank?
+        row :avg_bond_quality do |h|
+          t.quality
+        end
+        row "AAA" do |h|
+          number_to_percentage h.cq_aaa.to_f * 100, precision: 1
+        end
+        row "AA" do |h|
+          number_to_percentage t.cq_aa.to_f * 100, precision: 1
+        end
+        row "A" do |h|
+          number_to_percentage h.cq_a.to_f * 100, precision: 1
         end
         
-    end
+        row "BBB" do |h|
+          number_to_percentage h.cq_bbb.to_f * 100, precision: 1
+        end
+        row "BB" do |h|
+          number_to_percentage h.cq_bb.to_f * 100, precision: 1
+        end
+        row "B" do |h|
+          number_to_percentage h.cq_b.to_f * 100, precision: 1
+        end
+        row "Below B" do |h|
+          number_to_percentage h.cq_below_b.to_f * 100, precision: 1
+        end
+        row "Not Rated" do |h|
+          number_to_percentage h.cq_not_rated.to_f * 100, precision: 1
+        end
+      end
+      if holding.bs_government.to_f > 0
+        row :bond_government do |t|
+          number_to_percentage t.bs_government.to_f * 100, precision: 1 
+        end
+        row :bond_gov_tips do |t|
+          number_to_percentage t.gov_tips.to_f * 100, precision: 1
+        end
+        row :bond_gov_nominal do |t|
+          number_to_percentage t.gov_nominal.to_f * 100, precision: 1
+        end
+        row :bond_corporate do |t|
+          number_to_percentage t.bs_corporate.to_f * 100, precision: 1
+        end
+
+        row :bond_securitized do |t|
+          number_to_percentage t.bs_securitized.to_f * 100, precision: 1
+        end
+        row :bond_other do |t|
+          number_to_percentage t.bs_other.to_f * 100, precision: 1
+        end
+        row :bond_cash_equivilent do |t|
+          number_to_percentage t.bs_cash.to_f * 100, precision: 1
+        end
+        
+      end
+      if holding.ss_basic_material
+        row :basic_materials do |t|
+          number_to_percentage t.ss_basic_material.to_f * 100, precision: 1
+        end
+        row :consumer_cyclical do |t|
+          number_to_percentage t.ss_consumer_cyclical.to_f * 100, precision: 1
+        end
+        row :financial_services do |t|
+          number_to_percentage t.ss_financial_services.to_f * 100, precision: 1
+        end
+        row :realestate do |t|
+          number_to_percentage t.ss_realestate.to_f * 100, precision: 1
+        end
+        row :communications_services do |t|
+          number_to_percentage t.ss_communications_services.to_f * 100, precision: 1
+        end
+        row :energy do |t|
+          number_to_percentage t.ss_energy.to_f * 100, precision: 1
+        end
+        row :industrials do |t|
+          number_to_percentage t.ss_industrials.to_f * 100, precision: 1
+        end
+        row :technology do |t|
+          number_to_percentage t.ss_technology.to_f * 100, precision: 1
+        end
+        row :consumer_defensive do |t|
+          number_to_percentage t.ss_consumer_defensive.to_f * 100, precision: 1
+        end
+        row :healthcare do |t|
+          number_to_percentage t.ss_healthcare.to_f * 100, precision: 1
+        end
+        row :utilities do |t|
+          number_to_percentage t.ss_utilities.to_f * 100, precision: 1
+        end
+      end
+      if holding.mr_americas
+        row :americas do |t|
+          number_to_percentage t.mr_americas.to_f * 100, precision: 1
+        end 
+        row :greater_europe do |t|
+          number_to_percentage t.mr_greater_europe.to_f * 100, precision: 1
+        end
+        row :greater_asia do |t|
+          number_to_percentage t.mr_greater_asia.to_f * 100, precision: 1
+        end
+        row :developed do |t|
+          number_to_percentage t.mc_developed.to_f * 100, precision: 1
+        end
+        row :emerging do |t|
+          number_to_percentage t.mc_emerging.to_f * 100, precision: 1
+        end
+      end
+
   end
+
+  if holding.prices.count > 0
+    panel "Prices" do
+      table_for holdings.prices.order(price_date: :desc)  do
+        column :price do |p|
+          number_to_currency(p.price)
+        end
+        column :price_date
+      end
+    end
+    
+  end
+end
 end

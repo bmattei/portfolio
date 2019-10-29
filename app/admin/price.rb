@@ -14,7 +14,7 @@ ActiveAdmin.register Price do
   end
   form do |f| 
     f.inputs do
-      input :ticker, as: :select, collection: Ticker.all.collect {|x| [x.symbol, x.id]}
+      input :ticker, collection: Ticker.all.order(:symbol).collect {|x| [x.symbol, x.id]}
       input :price 
       input :price_date, as: :datepicker
     end
@@ -27,8 +27,6 @@ ActiveAdmin.register Price do
   
   collection_action :update_quotes, :method => :get do
     Ticker.retrieve_all_prices
-#    price_importer = ImportAllPrices.new()
-#    price_importer.import_all
     Account.all.each do |account|
       account.update_values
     end

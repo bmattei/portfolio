@@ -1,0 +1,5 @@
+<%= form_tag(import_ss_earning_data_admin_ss_user_url, method: "post") do |f| %>
+Earnings Data File:
+<%= text_field_tag :path %>
+<%= submit_tag("import_earnings") %>
+<% end %>

@@ -5,7 +5,10 @@ class Holding < ApplicationRecord
   belongs_to :account
   belongs_to :ticker
   has_many :prices, through: :ticker
-  delegate :symbol, :name, :description, :maturity, :duration, :expenses, :quality, :group, to: :ticker, prefix: false, allow_nil: true
+  # delegate :symbol, :name, :description, :maturity, :duration, :expenses, :quality, :group,
+  #          :aa_us_stock, :aa_non_us_stock, :aa_bond, :bs_government, :gov_nominal,:gov_tips,
+  #          :aa_cash, :aa_other, :quality, :cq_aaa, :cq_aa, :cq_a, :cq_bbb, :cq_bb, :cq_b,
+  #          to: :ticker, prefix: false, allow_nil: true
   delegate :brokerage, to: :account, prefix: false
   delegate :brokerage, :name, to: :account, prefix: true
   # Problem in add acocunt with holdings if account_id is validated.
@@ -13,6 +16,9 @@ class Holding < ApplicationRecord
   validates_presence_of  :ticker_id
   after_save :after_save
 
+  def method_missing(m, *args, &block)
+    self.ticker.send(m)
+  end
   def admin_user
     account.admin_user
   end
