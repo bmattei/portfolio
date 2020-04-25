@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_11_09_171650) do
+ActiveRecord::Schema.define(version: 2020_04_25_153603) do
 
   create_table "account_types", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
@@ -95,6 +95,18 @@ ActiveRecord::Schema.define(version: 2018_11_09_171650) do
   create_table "owners", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|
     t.string "name"
     t.string "owner_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "places", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.string "name"
+    t.string "street"
+    t.string "city"
+    t.string "zip"
+    t.string "state"
+    t.float "latitude"
+    t.float "longitude"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
@@ -203,6 +215,7 @@ ActiveRecord::Schema.define(version: 2018_11_09_171650) do
     t.decimal "cq_below_b", precision: 6, scale: 5
     t.decimal "cq_not_rated", precision: 6, scale: 5
     t.decimal "bs_cash", precision: 6, scale: 5
+    t.decimal "price", precision: 16, scale: 4
   end
 
   create_table "users", id: :integer, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci", force: :cascade do |t|

@@ -32,7 +32,22 @@ ActiveAdmin.register Holding do
     
   end
 
-
+  batch_action :retrieve_fund_data, :if => proc { true } do |ids|
+    begin
+      unique_ids = ids.uniq
+      unique_ids.each do |id|
+        holding = Holding.find(id)
+        holding.retrieve_fund_info
+      end
+      flash[:notice] = "Data Updated"
+      redirect_back fallback_location: admin_holdings_path
+    rescue StandardError => e
+      flash[:notice] = e.message
+      redirect_back fallback_location: admin_holdings_path
+    end
+    
+    
+  end
 
   form do |f| 
     f.inputs do

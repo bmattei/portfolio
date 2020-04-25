@@ -15,6 +15,7 @@ ActiveAdmin.register Account do
   filter :brokerage
   filter :cash
   filter :total_value,  filters: [:equals, :greater_than, :less_than]
+  filter :account_type
   
   index do
     selectable_column

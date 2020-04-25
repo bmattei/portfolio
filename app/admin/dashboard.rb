@@ -81,6 +81,7 @@ ActiveAdmin.register_page "Dashboard" do
         percent_struct,
         dollar_struct
       ]
+
       panel "Asset Allocation" do
         table_for allocation do |x|
           column :us_stock , :class => 'text-right' do |i|

@@ -57,16 +57,46 @@ class ImportPrices
     end
     quotes
   end
+  def self.getQuote(s)
+    symbol = s.upcase
+    puts symbol
+    uri_string = "https://www.alphavantage.co/query?function=GLOBAL_QUOTE&symbol=#{symbol}&apikey=#{ApiKey}"
+    uri = URI(uri_string)
+    return_quote = nil
+    begin
+      resp = Net::HTTP.get_response(uri)
+      quote_data = JSON.parse(resp.body)["Global Quote"]
+      if quote_data["05. price"]
+        return_quote = {}
+        return_quote[:price] = quote_data["05. price"].to_f
+        return_quote[:timestamp] = quote_data["07. latest trading day"]
+      end
+      
+    rescue StandardError => e
+      puts "UHOH #{e.message}"
+      byebug
+    end
+    sleep 12
+    return_quote
+  end
+
+  
   private
+
   def self.getBatch(symbols)
-    symbols = symbols.collect {|s| s.upcase}
+
     uri_string = nil
     return_quotes = {}
+    # BATCH_STOCK_QUOTES IS NO LONGER WORKING
+=begin
     if symbols.is_a?(Array)
+      symbols = symbols.collect {|s| s.upcase}    
       uri_string = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=#{symbols.join(',')}&apikey=#{ApiKey}"
     else
+      symbols = symbols.upcase
       uri_string = "https://www.alphavantage.co/query?function=BATCH_STOCK_QUOTES&symbols=#{symbols}&apikey=#{ApiKey}"
     end
+    byebug
     uri = URI(uri_string)
     begin
       resp = Net::HTTP.get_response(uri)
@@ -80,6 +110,18 @@ class ImportPrices
                                 }
       end
     rescue
+    end
+=end
+    if !symbols.is_a?(Array)
+      symbols = [symbols.to_s.upcase]
+    else
+      symbols =  symbols.collect {|s| s.to_s.upcase}    
+    end
+    symbols.each do |s|
+      quote_data = self.getQuote(s)
+      if quote_data and !quote_data.empty?
+        return_quotes[s] = quote_data
+      end
     end
     return_quotes
   end

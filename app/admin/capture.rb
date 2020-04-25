@@ -22,7 +22,7 @@ ActiveAdmin.register Capture do
   end
   
   index do
-    column :time do |c|
+    column :time, sortable: "created_at" do |c|
       c.created_at
     end
     column :total, :class => 'text-right' do |c|

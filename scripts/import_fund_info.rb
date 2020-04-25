@@ -468,7 +468,6 @@ class EtlMorningStar
     load_market_classification(ticker, normalized_info[:market_classification])
     load_bond_data(ticker, normalized_info[:bond_data])
     load_credit_quality(ticker, normalized_info[:credit_quality])
-    byebug
     load_fixed_income_sectors(ticker, normalized_info[:fixed_income_sectors])
     ticker.save
   end
@@ -484,7 +483,8 @@ if File.expand_path(__FILE__) == File.expand_path($0)
   ems = EtlMorningStar.new
   if ARGV.count > 0
     ARGV.each do |symbol|
-      ticker = Ticker.where(symbol: symbol.upcase).first
+      #ticker = Ticker.where(symbol: symbol.upcase).first
+      ticker = Ticker.find_or_create_by(symbol: symbol.upcase)
       if ticker
         ems.etl_ticker(ticker)
       else

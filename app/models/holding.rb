@@ -49,6 +49,9 @@ class Holding < ApplicationRecord
     0
   end
 
+  def retrieve_fund_info
+    ticker.retrieve_fund_info
+  end
   private
   def after_save
     if self.shares == 0
@@ -57,5 +60,6 @@ class Holding < ApplicationRecord
       self.ticker.retrieve_price
     end
   end
+  
 
 end

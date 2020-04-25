@@ -1,5 +1,4 @@
 class Ticker < ApplicationRecord
-
   has_many :holdings, dependent: :destroy
   has_many :prices
   has_many :accounts, through: :holdings
@@ -30,6 +29,8 @@ class Ticker < ApplicationRecord
           price = ticker.prices.where(price_date: date).first_or_create(price: quote[:price])
           price.price = quote[:price]
           price.save
+          ticker.price = price.price
+          ticker.save
         else
           puts "symbol not found #{ticker.symbol}"
         end
@@ -80,18 +81,30 @@ class Ticker < ApplicationRecord
       nil
     end
   end
+
   def last_price
-    price = self.prices.order(updated_at: :asc).last
-    if price
-      price.price
-      else
-      nil
+    if !self.price
+      self.price = self.prices.order(updated_at: :asc).last
     end
+    self.price
   end
 
   def group
     self[:group] || "NA"
 
+  end
+  @@ems = nil
+  def retrieve_fund_info
+    if self.mutual_fund? || self.etf?
+      if !@@ems
+        @@ems = EtlMorningStar.new
+      end
+      @@ems.etl_ticker(self)
+      self.save
+      @@ems.close_session
+    end
+
+      
   end
 
   

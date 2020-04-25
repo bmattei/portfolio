@@ -21,6 +21,15 @@ ActiveAdmin.register Price do
     f.actions
   end
 
+  show title: :symbol do |price|
+    attributes_table do
+      row :price
+      row :price_date
+      row :symbol do |p|
+        p.ticker.symbol
+      end
+    end
+  end
 
 
   #  ACTIONS
@@ -43,7 +52,7 @@ ActiveAdmin.register Price do
   filter :price_date
   index do
     column :ticker,  sortable: "tickers.symbol" do |p|
-      p.symbol if p.ticker
+      p.ticker.symbol if p.ticker
     end
     column :price, :class => 'text-right' do |p|
       number_to_currency p.price

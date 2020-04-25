@@ -1,4 +1,4 @@
-#!/usr/bin/env ruby
+s#!/usr/bin/env ruby
 $LOAD_PATH << '.'
 require 'selenium-webdriver'
 require 'nokogiri'

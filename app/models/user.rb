@@ -111,7 +111,6 @@ class User < ApplicationRecord
 
   def import_earnings(file)
     success = true
-    byebug
     if !File.exists?(file)
       success = false
     end
