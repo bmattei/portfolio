@@ -1,5 +1,11 @@
 #!/usr/bin/env ruby
 # coding: utf-8
+# This script imports data about funds from Morningstar.
+#   - Expense Ratio
+#   - Region invested in.
+#   - Cap - large, Mid, Small
+#   - Equity/Bond
+#   ...
 
 $LOAD_PATH << '.'
 require 'selenium-webdriver'

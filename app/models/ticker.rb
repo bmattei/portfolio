@@ -104,7 +104,7 @@ class Ticker < ApplicationRecord
       @@ems.close_session
     end
 
-      
+    
   end
 
   
