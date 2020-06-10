@@ -1,5 +1,19 @@
 module ActiveAdmin::ViewHelper
-  def holding_allocation(total)
+  def portfolio_html_table()
+    ''
+  end
+  def portfolio_info()
+
+    summary_info = current_admin_user.summary_info
+    portfolio_info = []
+    summary_info.each do |h|
+      portfolio_info.push([h.symbol, h.value])
+    end
+    portfolio_info = portfolio_info.sort {| a, b| b[1] <=> a[1]}
+    portfolio_info
+  end
+  
+  def holdings_allocation()
     dollar_hash = {:display_as => :dollar}
     percent_hash = {:display_as => :percent}
     summary_info = current_admin_user.summary_info
@@ -9,14 +23,15 @@ module ActiveAdmin::ViewHelper
     end
     dollar_struct = OpenStruct.new(dollar_hash)
     percent_struct = OpenStruct.new(percent_hash)
+
     holding_allocation = [
       percent_struct,
       dollar_struct,
-
     ]
 
-
   end
+
+
   def segment_allocation(total)
     dollar_struct =       OpenStruct.new(
         display_as: :dollar,

@@ -6,7 +6,41 @@ ActiveAdmin.register_page "Dashboard" do
     total = current_admin_user.total_value()
     if total > 0
       allocation = segment_allocation(total)
-
+      portfolio = portfolio_info()
+      panel "Holdings" do
+        div do
+          columns do
+            portfolio.each do |x|
+              column do
+                span x[0] 
+              end
+            end
+          end
+          columns do
+            portfolio.each do |x|
+              column do
+                number_to_percentage(x[1]/total * 100, precision: 2)
+              end
+            end
+          end
+          columns do
+            portfolio.each do |x|
+              column do
+                number_to_currency x[1]
+              end
+            end
+          end
+        end
+        render :partial => '/admin/pie_chart',
+               :locals => {
+                 allocation: portfolio,
+                 id: 'pie-chart'
+               }
+        
+      end
+      
+      
+      
       panel "Asset Allocation" do
         table_for allocation do |x|
           column :us_stock , :class => 'text-right' do |i|
